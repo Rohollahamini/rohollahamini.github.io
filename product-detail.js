@@ -19,6 +19,22 @@ const products = [
         features: ['ضد حساسیت', 'مقاوم در برابر تعریق', 'رایحه پایدار']
     },
     {
+        id: '1',
+        name: 'عطر مردانه دیور',
+        brand: 'Dior',
+        description: 'عطر مردانه دیور با رایحه گرم و جذاب، مناسب برای استفاده روزانه و مراسم خاص',
+        price: 850000,
+        originalPrice: 1200000,
+        image: '🫙',
+        category: 'men',
+        rating: 4.8,
+        reviews: 1247,
+        inStock: true,
+        discount: 29,
+        volume: '100ml',
+        features: ['ضد حساسیت', 'مقاوم در برابر تعریق', 'رایحه پایدار']
+    },
+    {
         id: '2',
         name: 'عطر زنانه شنل',
         brand: 'Chanel',
@@ -155,13 +171,12 @@ function loadProductData() {
         const product = products.find(p => p.id === productId);
         if (product) {
             updateProductDisplay(product);
-        } else {
-            // Product not found, redirect to home
-            window.location.href = 'index.html';
+            return;
         }
-    } else {
-        // No product ID, redirect to home
-        window.location.href = 'index.html';
+    }
+    // Fallback to first product if id is missing or not found
+    if (products.length > 0) {
+        updateProductDisplay(products[0]);
     }
 }
 
@@ -213,10 +228,10 @@ function updateProductDisplay(product) {
     
     // Update product images (using product ID to get different images)
     const imageUrls = [
-        'https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&h=500&fit=crop',
-        'https://images.unsplash.com/photo-1592945403244-b3faa5b613b0?w=500&h=500&fit=crop',
-        'https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=500&h=500&fit=crop',
-        'https://images.unsplash.com/photo-1590736969955-71cc94901354?w=500&h=500&fit=crop'
+        'img.png',
+        'img.png',
+        'img.png',
+        'img.png'
     ];
     
     const mainImage = document.getElementById('mainImage');
@@ -233,7 +248,7 @@ function updateProductDisplay(product) {
         const img = thumbnail.querySelector('img');
         if (img) {
             const imageIndex = (parseInt(product.id) + index) % imageUrls.length;
-            img.src = imageUrls[imageIndex].replace('w=500&h=500', 'w=100&h=100');
+            img.src = imageUrls[imageIndex];
             thumbnail.dataset.image = imageUrls[imageIndex];
         }
     });
@@ -409,11 +424,18 @@ function initQuantityControls() {
 // Product Actions
 function initProductActions() {
     const addToCartBtn = document.getElementById('addToCart');
+    const addToCartLeftBtn = document.getElementById('addToCartLeft');
     const buyNowBtn = document.getElementById('buyNow');
 
     if (addToCartBtn) {
         addToCartBtn.addEventListener('click', function() {
-            addToCart();
+            addMainProductToCart();
+        });
+    }
+
+    if (addToCartLeftBtn) {
+        addToCartLeftBtn.addEventListener('click', function() {
+            addMainProductToCart();
         });
     }
 
@@ -425,11 +447,10 @@ function initProductActions() {
 }
 
 // Add to Cart Function
-function addToCart() {
+function addMainProductToCart() {
     const quantity = parseInt(document.getElementById('quantity').value);
     const activeVariant = document.querySelector('.variant-btn.active');
     const volume = activeVariant ? activeVariant.dataset.volume : '50';
-    const currentPrice = document.querySelector('.current-price').textContent;
     
     // Get current product from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -440,6 +461,10 @@ function addToCart() {
         showNotification('خطا در بارگذاری اطلاعات محصول', 'error');
         return;
     }
+    
+    // Get current price from the display
+    const currentPriceElement = document.querySelector('.current-price');
+    const currentPrice = currentPriceElement ? currentPriceElement.textContent : formatPrice(product.price);
     
     // Get product info
     const productInfo = {
@@ -466,16 +491,19 @@ function addToCart() {
 
     localStorage.setItem('cart', JSON.stringify(cart));
     
-    // Show success notification
-    showNotification('محصول به سبد خرید اضافه شد', 'success');
+    // Show success notification with quantity
+    showNotification(`${quantity} عدد ${product.name} به سبد خرید اضافه شد`, 'success');
     
     // Update cart count
     updateCartCount();
+    
+    // Reset quantity to 1
+    document.getElementById('quantity').value = '1';
 }
 
 // Buy Now Function
 function buyNow() {
-    addToCart();
+    addMainProductToCart();
     // Redirect to checkout page
     setTimeout(() => {
         window.location.href = 'checkout.html';
@@ -487,9 +515,16 @@ function initProductTabs() {
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
 
+    console.log('Tab buttons found:', tabButtons.length);
+    console.log('Tab contents found:', tabContents.length);
+
     tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             const targetTab = this.dataset.tab;
+            console.log('Tab clicked:', targetTab);
             
             // Update active button
             tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -500,10 +535,31 @@ function initProductTabs() {
                 content.classList.remove('active');
                 if (content.id === targetTab) {
                     content.classList.add('active');
+                    console.log('Activated tab:', targetTab);
                 }
             });
         });
     });
+    
+    // Add CSS for tab functionality
+    const tabStyle = document.createElement('style');
+    tabStyle.textContent = `
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-btn {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+    `;
+    document.head.appendChild(tabStyle);
 }
 
 // FAQ Functionality
@@ -625,7 +681,7 @@ function createRelatedProductCard(product) {
                     </div>
                 </div>
                 <div class="product-buttons">
-                    <button class="add-to-cart-btn" onclick="addToCart('${product.id}')" ${!product.inStock ? 'disabled' : ''}>
+                    <button class="add-to-cart-btn" onclick="addRelatedToCart('${product.id}')" ${!product.inStock ? 'disabled' : ''}>
                         <i class="fas fa-shopping-cart"></i>
                         ${product.inStock ? 'افزودن به سبد خرید' : 'ناموجود'}
                     </button>
@@ -705,6 +761,9 @@ function openCart() {
         cartSidebar.classList.add('open');
         cartOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
+        
+        // Update cart display
+        updateCartDisplay();
     }
 }
 
@@ -719,6 +778,76 @@ function closeCartSidebar() {
     }
 }
 
+// Update cart display
+function updateCartDisplay() {
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    
+    if (!cartItems || !cartTotal) return;
+    
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    
+    if (cart.length === 0) {
+        cartItems.innerHTML = '<div class="empty-cart">سبد خرید خالی است</div>';
+        cartTotal.textContent = '۰ تومان';
+        return;
+    }
+    
+    // Render cart items
+    cartItems.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <div class="cart-item-image">
+                <img src="${item.image}" alt="${item.name}">
+            </div>
+            <div class="cart-item-info">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-volume">${item.volume}</div>
+                <div class="cart-item-price">${item.price} تومان</div>
+                <div class="cart-item-quantity">
+                    <div class="quantity-control">
+                        <button onclick="updateCartItemQuantity('${item.id}', -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="updateCartItemQuantity('${item.id}', 1)">+</button>
+                    </div>
+                    <button class="remove-item" onclick="removeCartItem('${item.id}')">حذف</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    // Calculate and display total
+    const total = cart.reduce((sum, item) => {
+        const price = parseInt(item.price.replace(/,/g, ''));
+        return sum + (price * item.quantity);
+    }, 0);
+    
+    cartTotal.textContent = formatPrice(total) + ' تومان';
+}
+
+// Update cart item quantity
+function updateCartItemQuantity(itemId, change) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const itemIndex = cart.findIndex(item => item.id === itemId);
+    
+    if (itemIndex > -1) {
+        cart[itemIndex].quantity = Math.max(1, cart[itemIndex].quantity + change);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+        updateCartCount();
+    }
+}
+
+// Remove cart item
+function removeCartItem(itemId) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const filteredCart = cart.filter(item => item.id !== itemId);
+    localStorage.setItem('cart', JSON.stringify(filteredCart));
+    
+    updateCartDisplay();
+    updateCartCount();
+    showNotification('محصول از سبد خرید حذف شد', 'info');
+}
+
 // Related product functions
 function changeQuantity(productId, change) {
     const quantityElement = document.getElementById(`quantity-${productId}`);
@@ -729,7 +858,7 @@ function changeQuantity(productId, change) {
     }
 }
 
-function addToCart(productId) {
+function addRelatedToCart(productId) {
     const quantityElement = document.getElementById(`quantity-${productId}`);
     const quantity = quantityElement ? parseInt(quantityElement.textContent) : 1;
     

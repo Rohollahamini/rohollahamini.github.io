@@ -7,6 +7,12 @@
     <meta name="description" content="عطر Dior Sauvage مردانه، رایحه‌ای تازه و جذاب برای آقایان">
     <meta name="keywords" content="عطر Dior Sauvage، عطر مردانه، Dior، عطرستان">
     
+    <!-- Preload critical resources -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="product-detail.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
@@ -16,8 +22,53 @@
     
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Prevent FOUC -->
+    <style>
+        body {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        body.loaded {
+            opacity: 1;
+        }
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loadingScreen">
+        <div class="loading-spinner"></div>
+    </div>
+
     <!-- Header -->
     <header class="header">
         <!-- Top Bar -->
@@ -111,24 +162,30 @@
                 <!-- Product Images -->
                 <div class="product-images">
                     <div class="main-image">
-                        <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&h=500&fit=crop" alt="Dior Sauvage" id="mainImage">
+                        <img src="img.png" alt="Dior Sauvage" id="mainImage">
                         <div class="image-zoom">
                             <i class="fas fa-search-plus"></i>
                         </div>
                     </div>
                     <div class="image-thumbnails">
-                        <div class="thumbnail active" data-image="https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&h=500&fit=crop">
-                            <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=100&h=100&fit=crop" alt="تصویر ۱">
+                        <div class="thumbnail active" data-image="img.png">
+                            <img src="img.png" alt="تصویر ۱">
                         </div>
-                        <div class="thumbnail" data-image="https://images.unsplash.com/photo-1592945403244-b3faa5b613b0?w=500&h=500&fit=crop">
-                            <img src="https://images.unsplash.com/photo-1592945403244-b3faa5b613b0?w=100&h=100&fit=crop" alt="تصویر ۲">
+                        <div class="thumbnail" data-image="img.png">
+                            <img src="img.png" alt="تصویر ۲">
                         </div>
-                        <div class="thumbnail" data-image="https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=500&h=500&fit=crop">
-                            <img src="https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=100&h=100&fit=crop" alt="تصویر ۳">
+                        <div class="thumbnail" data-image="img.png">
+                            <img src="img.png" alt="تصویر ۳">
                         </div>
-                        <div class="thumbnail" data-image="https://images.unsplash.com/photo-1590736969955-71cc94901354?w=500&h=500&fit=crop">
-                            <img src="https://images.unsplash.com/photo-1590736969955-71cc94901354?w=100&h=100&fit=crop" alt="تصویر ۴">
+                        <div class="thumbnail" data-image="img.png">
+                            <img src="img.png" alt="تصویر ۴">
                         </div>
+                    </div>
+                    <div class="image-actions">
+                        <button type="button" class="btn-primary add-to-cart-left" id="addToCartLeft">
+                            <i class="fas fa-shopping-cart"></i>
+                            افزودن به سبد خرید
+                        </button>
                     </div>
                 </div>
 
@@ -137,7 +194,7 @@
                     <div class="product-header">
                         <h1 class="product-title">عطر Dior Sauvage مردانه</h1>
                         <div class="product-brand">
-                            <img src="https://images.unsplash.com/photo-1590736969955-71cc94901354?w=50&h=50&fit=crop" alt="Dior">
+                            <img src="img.png" alt="Dior">
                             <span>برند: Dior</span>
                         </div>
                     </div>
@@ -254,10 +311,10 @@
         <div class="container">
             <div class="tabs-container">
                 <div class="tabs-header">
-                    <button class="tab-btn active" data-tab="description">توضیحات</button>
-                    <button class="tab-btn" data-tab="specifications">مشخصات</button>
-                    <button class="tab-btn" data-tab="reviews">نظرات</button>
-                    <button class="tab-btn" data-tab="questions">سوالات</button>
+                    <button type="button" class="tab-btn active" data-tab="description">توضیحات</button>
+                    <button type="button" class="tab-btn" data-tab="specifications">مشخصات</button>
+                    <button type="button" class="tab-btn" data-tab="reviews">نظرات</button>
+                    <button type="button" class="tab-btn" data-tab="questions">سوالات</button>
                 </div>
 
                 <div class="tabs-content">
@@ -543,7 +600,44 @@
     </div>
 
     <!-- JavaScript -->
-    <script src="script.js"></script>
-    <script src="product-detail.js"></script>
+    <script src="script.js" defer></script>
+    <script src="product-detail.js" defer></script>
+    <script>
+        // Prevent FOUC and handle loading
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide loading screen and show content
+            const loadingScreen = document.getElementById('loadingScreen');
+            const body = document.body;
+            
+            if (loadingScreen) {
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 300);
+            }
+            
+            body.classList.add('loaded');
+        });
+        
+        // Fallback if DOMContentLoaded doesn't fire
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const body = document.body;
+            
+            if (loadingScreen) {
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 300);
+            }
+            
+            body.classList.add('loaded');
+        });
+        
+        // Error handling for failed resources
+        window.addEventListener('error', function(e) {
+            console.error('Resource failed to load:', e.target.src || e.target.href);
+        });
+    </script>
 </body>
 </html>

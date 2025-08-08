@@ -7,7 +7,7 @@ const products = [
         description: 'عطر مردانه دیور با رایحه گرم و جذاب، مناسب برای استفاده روزانه و مراسم خاص',
         price: 850000,
         originalPrice: 1200000,
-        image: '🫙',
+        image: 'img.png',
         category: 'men',
         rating: 4.8,
         reviews: 1247,
@@ -23,7 +23,7 @@ const products = [
         description: 'عطر زنانه شنل با رایحه گل‌های بهاری و نت‌های گرم، مناسب برای بانوان شیک‌پوش',
         price: 1200000,
         originalPrice: 1500000,
-        image: '🫙',
+        image: 'img.png',
         category: 'women',
         rating: 4.9,
         reviews: 892,
@@ -38,7 +38,7 @@ const products = [
         brand: 'Tom Ford',
         description: 'عطر یونیسکس تام فورد با رایحه منحصر به فرد و ترکیب خاص، مناسب برای افراد خاص‌پسند',
         price: 2100000,
-        image: '🫙',
+        image: 'img.png',
         category: 'unisex',
         rating: 4.7,
         reviews: 567,
@@ -53,7 +53,7 @@ const products = [
         description: 'عطر مردانه آرمانی با رایحه تازه و ورزشی، مناسب برای استفاده روزانه',
         price: 650000,
         originalPrice: 950000,
-        image: '🫙',
+        image: 'img.png',
         category: 'men',
         rating: 4.6,
         reviews: 734,
@@ -69,7 +69,7 @@ const products = [
         description: 'عطر زنانه ویکتوریا سیکرت با رایحه شیرین و جذاب، مناسب برای بانوان جوان',
         price: 450000,
         originalPrice: 680000,
-        image: '🫙',
+        image: 'img.png',
         category: 'women',
         rating: 4.5,
         reviews: 445,
@@ -84,7 +84,7 @@ const products = [
         brand: 'Jo Malone',
         description: 'عطر یونیسکس جو مالون با رایحه طبیعی و ملایم، مناسب برای استفاده در تمام فصول',
         price: 890000,
-        image: '🫙',
+        image: 'img.png',
         category: 'unisex',
         rating: 4.8,
         reviews: 623,
@@ -98,31 +98,31 @@ const products = [
         brand: 'Hugo Boss',
         description: 'عطر مردانه هوگو باس با رایحه کلاسیک و حرفه‌ای، مناسب برای محیط کار',
         price: 720000,
-        originalPrice: 1100000,
-        image: '🫙',
+        originalPrice: 980000,
+        image: 'img.png',
         category: 'men',
         rating: 4.4,
-        reviews: 389,
+        reviews: 456,
         inStock: true,
-        discount: 35,
+        discount: 26,
         volume: '100ml',
-        features: ['مناسب محیط کار', 'رایحه کلاسیک', 'مقاوم 6 ساعته']
+        features: ['رایحه کلاسیک', 'مناسب محیط کار', 'مقاوم 6 ساعته']
     },
     {
         id: '8',
-        name: 'عطر زنانه لانکوم',
+        name: 'عطر زنانه لنکوم',
         brand: 'Lancome',
-        description: 'عطر زنانه لانکوم با رایحه رمانتیک و عاشقانه، مناسب برای قرارهای عاشقانه',
+        description: 'عطر زنانه لنکوم با رایحه رمانتیک و عاشقانه، مناسب برای مراسم خاص',
         price: 950000,
-        originalPrice: 1300000,
-        image: '🫙',
+        originalPrice: 1200000,
+        image: 'img.png',
         category: 'women',
         rating: 4.7,
-        reviews: 512,
+        reviews: 389,
         inStock: true,
-        discount: 27,
+        discount: 21,
         volume: '75ml',
-        features: ['رایحه رمانتیک', 'مناسب قرارهای عاشقانه', 'بسته‌بندی زیبا']
+        features: ['رایحه رمانتیک', 'مناسب مراسم خاص', 'بسته‌بندی شیشه‌ای']
     }
 ];
 
@@ -184,7 +184,7 @@ function createProductCard(product) {
                 </div>
                 ${product.discount ? `<div class="discount-badge">${product.discount}%</div>` : ''}
                 <div class="volume-badge">${product.volume}</div>
-                <div class="product-icon">${product.image}</div>
+                <img src="${product.image}" alt="${product.name}" class="product-image">
             </div>
             <div class="product-info">
                 <div class="product-brand">${product.brand}</div>
@@ -230,33 +230,69 @@ function createProductCard(product) {
 }
 
 function renderProducts() {
-    if (productsGrid) {
-        productsGrid.innerHTML = filteredProducts.map(product => createProductCard(product)).join('');
+    console.log('Rendering products...', { productsGrid, filteredProducts });
+    
+    if (!productsGrid) {
+        console.warn('Products grid not found');
+        return;
+    }
+    
+    if (!filteredProducts || filteredProducts.length === 0) {
+        console.warn('No products to render');
+        productsGrid.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">هیچ محصولی یافت نشد</div>';
+        return;
+    }
+    
+    try {
+        const productsHTML = filteredProducts.map(product => createProductCard(product)).join('');
+        productsGrid.innerHTML = productsHTML;
+        console.log(`Rendered ${filteredProducts.length} products successfully`);
+    } catch (error) {
+        console.error('Error rendering products:', error);
+        productsGrid.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">خطا در بارگذاری محصولات</div>';
     }
 }
 
 function filterProducts() {
-    const selectedCategory = document.querySelector('.category-btn.active')?.dataset.category || 'all';
-    const selectedBrand = brandFilter?.value || 'all';
-    const categoryFilterValue = document.getElementById('categoryFilter')?.value || 'all';
-    const minPrice = parseInt(document.getElementById('minPrice')?.value) || 0;
-    const maxPrice = parseInt(document.getElementById('maxPrice')?.value) || 100000000;
-    const searchTerm = searchInput?.value.toLowerCase() || '';
+    try {
+        const selectedCategory = document.querySelector('.category-btn.active')?.dataset.category || 'all';
+        const selectedBrand = brandFilter?.value || 'all';
+        const categoryFilterValue = document.getElementById('categoryFilter')?.value || 'all';
+        const minPrice = parseInt(document.getElementById('minPrice')?.value) || 0;
+        const maxPrice = parseInt(document.getElementById('maxPrice')?.value) || 100000000;
+        const searchTerm = searchInput?.value.toLowerCase() || '';
 
-    filteredProducts = products.filter(product => {
-        const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory;
-        const categoryFilterMatch = categoryFilterValue === 'all' || product.category === categoryFilterValue;
-        const brandMatch = selectedBrand === 'all' || product.brand === selectedBrand;
-        const priceMatch = product.price >= minPrice && product.price <= maxPrice;
-        const searchMatch = product.name.toLowerCase().includes(searchTerm) || 
-                          product.brand.toLowerCase().includes(searchTerm) ||
-                          product.description.toLowerCase().includes(searchTerm);
-        
-        return categoryMatch && categoryFilterMatch && brandMatch && priceMatch && searchMatch;
-    });
+        console.log('Filtering products with:', {
+            selectedCategory,
+            selectedBrand,
+            categoryFilterValue,
+            minPrice,
+            maxPrice,
+            searchTerm
+        });
 
-    sortProducts();
-    renderProducts();
+        filteredProducts = products.filter(product => {
+            const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory;
+            const categoryFilterMatch = categoryFilterValue === 'all' || product.category === categoryFilterValue;
+            const brandMatch = selectedBrand === 'all' || product.brand === selectedBrand;
+            const priceMatch = product.price >= minPrice && product.price <= maxPrice;
+            const searchMatch = product.name.toLowerCase().includes(searchTerm) || 
+                              product.brand.toLowerCase().includes(searchTerm) ||
+                              product.description.toLowerCase().includes(searchTerm);
+            
+            return categoryMatch && categoryFilterMatch && brandMatch && priceMatch && searchMatch;
+        });
+
+        console.log(`Filtered to ${filteredProducts.length} products`);
+
+        sortProducts();
+        renderProducts();
+    } catch (error) {
+        console.error('Error filtering products:', error);
+        // Fallback to showing all products
+        filteredProducts = products;
+        renderProducts();
+    }
 }
 
 function sortProducts() {
@@ -298,7 +334,7 @@ function addToCart(productId) {
     }
     
     updateCartDisplay();
-    showNotification('محصول با موفقیت به سبد خرید اضافه شد!');
+    showNotification(`${quantity} عدد ${product.name} به سبد خرید اضافه شد!`);
     
     // Reset quantity
     document.getElementById(`quantity-${productId}`).textContent = '1';
@@ -310,11 +346,20 @@ function updateCartDisplay() {
     cartCount.textContent = totalItems;
     
     // Update cart items
+    if (cart.length === 0) {
+        cartItems.innerHTML = '<div class="empty-cart">سبد خرید خالی است</div>';
+        cartTotal.textContent = '۰ تومان';
+        return;
+    }
+    
     cartItems.innerHTML = cart.map(item => `
         <div class="cart-item">
-            <div class="cart-item-image">${item.product.image}</div>
+            <div class="cart-item-image">
+                <img src="${item.product.image}" alt="${item.product.name}">
+            </div>
             <div class="cart-item-info">
                 <div class="cart-item-name">${item.product.name}</div>
+                <div class="cart-item-volume">${item.product.volume}</div>
                 <div class="cart-item-price">${formatPrice(item.product.price)} تومان</div>
                 <div class="cart-item-quantity">
                     <div class="quantity-control">
@@ -382,18 +427,84 @@ function closeCartSidebar() {
     document.body.style.overflow = 'auto';
 }
 
-// Event Listeners
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if we're on the main page (has products)
-    if (productsGrid) {
-        renderProducts();
+// Initialize mobile search functionality
+function initMobileSearch() {
+    const mobileSearchInput = document.querySelector('.mobile-search input');
+    const mobileSearchBtn = document.querySelector('.mobile-search button');
+    
+    if (mobileSearchInput && mobileSearchBtn) {
+        // Search on button click
+        mobileSearchBtn.addEventListener('click', function() {
+            const searchTerm = mobileSearchInput.value.toLowerCase();
+            performSearch(searchTerm);
+        });
+        
+        // Search on Enter key
+        mobileSearchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const searchTerm = mobileSearchInput.value.toLowerCase();
+                performSearch(searchTerm);
+            }
+        });
+    }
+}
+
+// Perform search function
+function performSearch(searchTerm) {
+    if (searchTerm.trim() === '') {
+        // If search is empty, show all products
+        filteredProducts = products;
+    } else {
+        // Filter products based on search term
+        filteredProducts = products.filter(product => {
+            return product.name.toLowerCase().includes(searchTerm) ||
+                   product.brand.toLowerCase().includes(searchTerm) ||
+                   product.description.toLowerCase().includes(searchTerm);
+        });
     }
     
-    // Cart events
+    // Update display
+    renderProducts();
+    
+    // Show notification
+    if (filteredProducts.length === 0) {
+        showNotification('هیچ محصولی یافت نشد');
+    } else {
+        showNotification(`${filteredProducts.length} محصول یافت شد`);
+    }
+}
+
+// Initialize theme toggle
+function initThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+    }
+}
+
+// Initialize cart functionality
+function initCart() {
+    const cartBtn = document.getElementById('cartBtn');
+    const closeCart = document.getElementById('closeCart');
+    const cartOverlay = document.getElementById('cartOverlay');
+    
     if (cartBtn) cartBtn.addEventListener('click', openCart);
     if (closeCart) closeCart.addEventListener('click', closeCartSidebar);
     if (cartOverlay) cartOverlay.addEventListener('click', closeCartSidebar);
-    
+}
+
+// Initialize filters
+function initFilters() {
     // Search
     if (searchInput) searchInput.addEventListener('input', filterProducts);
     
@@ -429,14 +540,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    function updatePriceDisplay() {
-        const min = parseInt(minPriceInput.value) || 0;
-        const max = parseInt(maxPriceInput.value) || 100000000;
-        if (priceDisplay) {
-            priceDisplay.textContent = `${formatPrice(min)} تا ${formatPrice(max)} تومان`;
-        }
-    }
-    
     // Category buttons
     if (categoryButtons.length > 0) {
         categoryButtons.forEach(button => {
@@ -465,62 +568,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Theme toggle
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
-        const icon = this.querySelector('i');
-        if (document.body.classList.contains('dark-mode')) {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        } else {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
+    function updatePriceDisplay() {
+        const min = parseInt(minPriceInput.value) || 0;
+        const max = parseInt(maxPriceInput.value) || 100000000;
+        if (priceDisplay) {
+            priceDisplay.textContent = `${formatPrice(min)} تا ${formatPrice(max)} تومان`;
         }
-    });
+    }
+}
+
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing...');
     
-    // Mobile menu toggle
-    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    
-    if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.addEventListener('click', function() {
-            mobileMenu.classList.toggle('open');
-        });
+    // Check if we're on the main page (has products)
+    if (productsGrid) {
+        console.log('Main page detected, rendering products...');
+        renderProducts();
     }
     
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
+    // Initialize all functionality
+    initThemeToggle();
+    initCart();
+    initMobileSearch();
     
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
+    // Initialize filters
+    initFilters();
     
-    // Add loading animation
-    window.addEventListener('load', function() {
-        document.body.classList.add('loaded');
-    });
+    // Update cart count
+    updateCartCount();
+    
+    console.log('Initialization complete');
+});
+
+// Fallback initialization for window load
+window.addEventListener('load', function() {
+    console.log('Window loaded, checking initialization...');
+    
+    // If products haven't been rendered yet, render them
+    if (productsGrid && productsGrid.children.length === 0) {
+        console.log('Products not rendered, rendering now...');
+        renderProducts();
+    }
+    
+    // Ensure cart count is updated
+    updateCartCount();
 });
 
 // Keyboard shortcuts
