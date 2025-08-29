@@ -331,7 +331,7 @@ if(categoryFilter) categoryFilter.addEventListener('change', renderProducts);
 if(statusFilter) statusFilter.addEventListener('change', renderProducts);
 
 // Product modal - Single instance management
-const modal = document.getElementById('productModal');
+const modal = document.getElementById('productModalEl');
 const closeModalBtn = document.getElementById('closeProductModal');
 const cancelProduct = document.getElementById('cancelProduct');
 const addProductBtn = document.getElementById('addProductBtn');
@@ -345,39 +345,22 @@ function initializeModal() {
   if (modalInitialized) return;
   modalInitialized = true;
   
-  if(closeModalBtn) closeModalBtn.addEventListener('click', closeProductModal);
-  if(cancelProduct) cancelProduct.addEventListener('click', closeProductModal);
-  if(addProductBtn) addProductBtn.addEventListener('click', ()=> openProductModal());
-  
-  // Close modal when clicking outside
-  if(modal) {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeProductModal();
-    });
-  }
+  if(addProductBtn) addProductBtn.addEventListener('click', ()=> {
+    window.location.href = 'product-form.html';
+  });
 }
 
 function openProductModal(id){
-  if(modalTitle) modalTitle.textContent = id? 'ویرایش محصول' : 'افزودن محصول';
-  if(form){ form.reset(); document.getElementById('productId').value = id||''; }
-  if(id){
-    const p = getProducts().find(x=> x.id === id);
-    if(p){
-      ['name','brand','price','originalPrice','category','volume','discount','inStock','description','image'].forEach(k=>{
-        const el = document.getElementById(k);
-        if(!el) return;
-        if(k==='inStock') el.value = p.inStock? 'true' : 'false';
-        else el.value = p[k] ?? '';
-      });
-      const features = document.getElementById('features');
-      if(features) features.value = (p.features||[]).join(', ');
-    }
+  // Redirect to standalone form page
+  if (id) {
+    window.location.href = `product-form.html?id=${encodeURIComponent(id)}`;
+  } else {
+    window.location.href = 'product-form.html';
   }
-  modal?.classList.add('show');
 }
 
 function closeProductModal(){ 
-  modal?.classList.remove('show'); 
+  modal?.classList.remove('active'); 
 }
 
 // Save product with activity tracking
@@ -395,6 +378,10 @@ if(form){
       price: Number(document.getElementById('price').value||0),
       originalPrice: Number(document.getElementById('originalPrice').value||0) || undefined,
       image: document.getElementById('image').value.trim() || 'img.png',
+      images: (document.getElementById('images')?.value||'')
+        .split(',')
+        .map(s=>s.trim())
+        .filter(Boolean),
       category: document.getElementById('category').value,
       rating: 4.8,
       reviews: 0,
@@ -415,11 +402,43 @@ if(form){
     }
     
     setProducts(list);
-    closeProductModal();
     renderProducts();
     showSuccessMessage(isEdit ? 'محصول با موفقیت ویرایش شد' : 'محصول جدید با موفقیت اضافه شد');
+    // After save, go back to dashboard
+    if (location.pathname.endsWith('product-form.html')) {
+      window.location.href = 'dashboard.html#products';
+    }
   });
 }
+
+// Auto-populate form on standalone product form page
+(function(){
+  const standaloneForm = document.getElementById('productForm');
+  if(!standaloneForm) return;
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  if(id){
+    const p = getProducts().find(x=> x.id === id);
+    if(p){
+      const titleEl = document.getElementById('modalTitle');
+      if (titleEl) titleEl.textContent = 'ویرایش محصول';
+      document.getElementById('productId').value = id;
+      ['name','brand','price','originalPrice','category','volume','discount','inStock','description','image'].forEach(k=>{
+        const el = document.getElementById(k);
+        if(!el) return;
+        if(k==='inStock') el.value = p.inStock? 'true' : 'false';
+        else el.value = p[k] ?? '';
+      });
+      const features = document.getElementById('features');
+      if(features) features.value = (p.features||[]).join(', ');
+      const images = document.getElementById('images');
+      if(images) images.value = (p.images||[]).join(', ');
+    }
+  } else {
+    const titleEl = document.getElementById('modalTitle');
+    if (titleEl) titleEl.textContent = 'افزودن محصول';
+  }
+})();
 
 // Delete product with confirmation
 function deleteProduct(id){
@@ -503,48 +522,50 @@ if(generateReportBtn) {
   });
 }
 
-// Global search with enhanced functionality
-const globalSearch = document.getElementById('globalSearch');
-if(globalSearch){
-  globalSearch.addEventListener('input', ()=>{
-    const query = globalSearch.value.trim();
-    if(query){
-      document.querySelector('[data-section="products"]').click();
-      searchInput.value = query;
-      renderProducts();
-    }
-  });
-}
-
-// Notification system
+// Simple message functions (without notifications)
 function showSuccessMessage(message) {
-  showNotification(message, 'success');
+  console.log('Success:', message);
 }
 
 function showErrorMessage(message) {
-  showNotification(message, 'error');
+  console.log('Error:', message);
 }
 
-function showNotification(message, type = 'info') {
-  const notification = document.createElement('div');
-  notification.className = `notification ${type}`;
-  notification.innerHTML = `
-    <i class="fa-solid fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
-    <span>${message}</span>
-  `;
+// Sidebar toggle functionality
+function initSidebarToggle() {
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
   
-  document.body.appendChild(notification);
-  
-  setTimeout(() => {
-    notification.classList.add('show');
-  }, 100);
-  
-  setTimeout(() => {
-    notification.classList.remove('show');
-    setTimeout(() => {
-      document.body.removeChild(notification);
-    }, 300);
-  }, 3000);
+  if (sidebarToggle && sidebar) {
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      if (sidebarOverlay) {
+        sidebarOverlay.classList.toggle('active');
+      }
+    });
+    
+    // Close sidebar when clicking overlay (mobile)
+    if (sidebarOverlay) {
+      sidebarOverlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('active');
+      });
+    }
+    
+    // Close sidebar when clicking on menu items (mobile)
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 720) {
+          sidebar.classList.remove('open');
+          if (sidebarOverlay) {
+            sidebarOverlay.classList.remove('active');
+          }
+        }
+      });
+    });
+  }
 }
 
 // Initialize everything
@@ -554,6 +575,7 @@ document.addEventListener('DOMContentLoaded', function() {
   refreshStats();
   renderActivities();
   initCharts();
+  initSidebarToggle();
   
   // Add some demo activities only if no activities exist
   if (!localStorage.getItem('admin_activities')) {
@@ -588,42 +610,16 @@ const additionalStyles = `
     font-size: 0.9rem;
     color: var(--text-secondary);
   }
-  
-  .notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1rem 1.5rem;
-    box-shadow: var(--shadow);
-    z-index: 10000;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    backdrop-filter: blur(20px);
-  }
-  
-  .notification.show {
-    transform: translateX(0);
-  }
-  
-  .notification.success {
-    border-left: 4px solid var(--success);
-  }
-  
-  .notification.error {
-    border-left: 4px solid var(--danger);
-  }
-  
-  .notification.info {
-    border-left: 4px solid var(--primary);
-  }
 `;
-
+const modalEl = document.getElementById('productModalEl');
+const openBtn = document.getElementById('openProductModal'); // فرضا دکمه باز کردن
+const closeBtn = document.getElementById('closeProductModal');
+if (openBtn && modalEl) openBtn.addEventListener('click', () => {
+  modalEl.classList.add('active');
+});
+if (closeBtn && modalEl) closeBtn.addEventListener('click', () => {
+  modalEl.classList.remove('active');
+});
 const styleSheet = document.createElement('style');
 styleSheet.textContent = additionalStyles;
 document.head.appendChild(styleSheet);

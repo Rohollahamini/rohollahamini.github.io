@@ -478,15 +478,28 @@ function performSearch(searchTerm) {
 function initThemeToggle() {
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
+        // Load saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            const icon = themeToggle.querySelector('i');
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+        
         themeToggle.addEventListener('click', function() {
             document.body.classList.toggle('dark-mode');
             const icon = this.querySelector('i');
-            if (document.body.classList.contains('dark-mode')) {
+            const isDark = document.body.classList.contains('dark-mode');
+            
+            if (isDark) {
                 icon.classList.remove('fa-moon');
                 icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
             } else {
                 icon.classList.remove('fa-sun');
                 icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
             }
         });
     }
@@ -591,6 +604,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initThemeToggle();
     initCart();
     initMobileSearch();
+    initMobileNav();
+    initFabCart();
+    initSearchAccordion();
     
     // Initialize filters
     initFilters();
@@ -670,3 +686,62 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style); 
+
+// Mobile nav toggle
+function initMobileNav() {
+    const nav = document.querySelector('.navigation');
+    const logo = document.querySelector('.logo');
+    const toggle = document.getElementById('navToggle');
+    if (!nav) return;
+    // Logo-driven accordion on mobile
+    if (logo) {
+        logo.addEventListener('click', function() {
+            nav.classList.toggle('logo-open');
+        });
+    }
+    // Keep old toggle for desktop if present
+    if (toggle) {
+        toggle.addEventListener('click', function() {
+            nav.classList.toggle('open');
+        });
+    }
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+        if (!nav.contains(e.target)) {
+            nav.classList.remove('logo-open');
+            nav.classList.remove('open');
+        }
+    });
+}
+
+// Floating cart (mobile)
+function initFabCart() {
+    const fab = document.getElementById('fabCartBtn');
+    if (!fab) return;
+    fab.addEventListener('click', openCart);
+}
+
+// Search Accordion
+function initSearchAccordion() {
+    const toggleBtn = document.getElementById('toggleSearchAccordion');
+    const accordion = document.querySelector('.search-accordion');
+    const input = document.getElementById('searchAccordionInput');
+    const submit = document.getElementById('searchAccordionSubmit');
+    if (!toggleBtn || !accordion || !input || !submit) return;
+
+    toggleBtn.addEventListener('click', function() {
+        accordion.classList.toggle('open');
+        setTimeout(() => input.focus(), 0);
+    });
+
+    submit.addEventListener('click', () => {
+        const term = input.value.toLowerCase();
+        performSearch(term);
+    });
+    input.addEventListener('keypress', function(e){
+        if (e.key === 'Enter') {
+            const term = input.value.toLowerCase();
+            performSearch(term);
+        }
+    });
+}
