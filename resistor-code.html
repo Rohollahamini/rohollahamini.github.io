@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>کد رنگی مقاومت - ماشین حساب الکترونیک</title>
+  <style>
+    body {
+      font-family: "Vazir", Tahoma, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                  radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+      z-index: -1;
+      animation: backgroundShift 20s ease-in-out infinite;
+    }
+
+    @keyframes backgroundShift {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin: 0;
+      color: #ffda79;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #0078d7, #005a9e);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      box-shadow: 0 6px 12px rgba(0,120,215,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,120,215,0.4);
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .calculator {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      max-width: 600px;
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .resistor-display {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 30px 0;
+    }
+
+    .resistor {
+      width: 200px;
+      height: 40px;
+      background: #8B4513;
+      border-radius: 20px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .band {
+      width: 20px;
+      height: 40px;
+      border-radius: 10px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    select {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      background: rgba(255,255,255,0.9);
+      color: #333;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0,120,215,0.3);
+    }
+
+    .calculate-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #0078d7, #005a9e);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 20px 0;
+      box-shadow: 0 6px 12px rgba(0,120,215,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .calculate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,120,215,0.4);
+    }
+
+    .result {
+      background: rgba(0,120,215,0.2);
+      border: 2px solid #0078d7;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .color-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .color-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      background: rgba(255,255,255,0.1);
+      padding: 8px;
+      border-radius: 8px;
+    }
+
+    .color-box {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 1px solid #fff;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .calculator {
+        padding: 20px;
+        margin: 10px;
+      }
+      
+      .back-btn {
+        top: 10px;
+        right: 10px;
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="window.location.href='index.html'">بازگشت</button>
+  
+  <div class="header">
+    <h1>کد رنگی مقاومت 🎨</h1>
+  </div>
+
+  <div class="container">
+    <div class="calculator">
+      <div class="resistor-display">
+        <div class="resistor">
+          <div class="band" id="band1" style="background: #000;"></div>
+          <div class="band" id="band2" style="background: #000;"></div>
+          <div class="band" id="band3" style="background: #000;"></div>
+          <div class="band" id="band4" style="background: #000;"></div>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="band1Select">نوار اول:</label>
+        <select id="band1Select" onchange="updateResistor()">
+          <option value="0" style="background: #000; color: #fff;">سیاه (0)</option>
+          <option value="1" style="background: #8B4513; color: #fff;">قهوه‌ای (1)</option>
+          <option value="2" style="background: #FF0000; color: #fff;">قرمز (2)</option>
+          <option value="3" style="background: #FFA500; color: #000;">نارنجی (3)</option>
+          <option value="4" style="background: #FFFF00; color: #000;">زرد (4)</option>
+          <option value="5" style="background: #00FF00; color: #000;">سبز (5)</option>
+          <option value="6" style="background: #0000FF; color: #fff;">آبی (6)</option>
+          <option value="7" style="background: #800080; color: #fff;">بنفش (7)</option>
+          <option value="8" style="background: #808080; color: #000;">خاکستری (8)</option>
+          <option value="9" style="background: #FFFFFF; color: #000;">سفید (9)</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="band2Select">نوار دوم:</label>
+        <select id="band2Select" onchange="updateResistor()">
+          <option value="0" style="background: #000; color: #fff;">سیاه (0)</option>
+          <option value="1" style="background: #8B4513; color: #fff;">قهوه‌ای (1)</option>
+          <option value="2" style="background: #FF0000; color: #fff;">قرمز (2)</option>
+          <option value="3" style="background: #FFA500; color: #000;">نارنجی (3)</option>
+          <option value="4" style="background: #FFFF00; color: #000;">زرد (4)</option>
+          <option value="5" style="background: #00FF00; color: #000;">سبز (5)</option>
+          <option value="6" style="background: #0000FF; color: #fff;">آبی (6)</option>
+          <option value="7" style="background: #800080; color: #fff;">بنفش (7)</option>
+          <option value="8" style="background: #808080; color: #000;">خاکستری (8)</option>
+          <option value="9" style="background: #FFFFFF; color: #000;">سفید (9)</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="band3Select">نوار سوم (ضریب):</label>
+        <select id="band3Select" onchange="updateResistor()">
+          <option value="1" style="background: #000; color: #fff;">سیاه (×1)</option>
+          <option value="10" style="background: #8B4513; color: #fff;">قهوه‌ای (×10)</option>
+          <option value="100" style="background: #FF0000; color: #fff;">قرمز (×100)</option>
+          <option value="1000" style="background: #FFA500; color: #000;">نارنجی (×1K)</option>
+          <option value="10000" style="background: #FFFF00; color: #000;">زرد (×10K)</option>
+          <option value="100000" style="background: #00FF00; color: #000;">سبز (×100K)</option>
+          <option value="1000000" style="background: #0000FF; color: #fff;">آبی (×1M)</option>
+          <option value="10000000" style="background: #800080; color: #fff;">بنفش (×10M)</option>
+          <option value="100000000" style="background: #808080; color: #000;">خاکستری (×100M)</option>
+          <option value="1000000000" style="background: #FFFFFF; color: #000;">سفید (×1G)</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="band4Select">نوار چهارم (تلرانس):</label>
+        <select id="band4Select" onchange="updateResistor()">
+          <option value="5" style="background: #FFD700; color: #000;">طلایی (±5%)</option>
+          <option value="10" style="background: #C0C0C0; color: #000;">نقره‌ای (±10%)</option>
+        </select>
+      </div>
+
+      <button class="calculate-btn" onclick="calculateResistance()">محاسبه مقاومت</button>
+
+      <div id="result" class="result" style="display: none;"></div>
+
+      <div class="color-legend">
+        <div class="color-item">
+          <div class="color-box" style="background: #000;"></div>
+          <span>سیاه: 0</span>
+        </div>
+        <div class="color-item">
+          <div class="color-box" style="background: #8B4513;"></div>
+          <span>قهوه‌ای: 1</span>
+        </div>
+        <div class="color-item">
+          <div class="color-box" style="background: #FF0000;"></div>
+          <span>قرمز: 2</span>
+        </div>
+        <div class="color-item">
+          <div class="color-box" style="background: #FFA500;"></div>
+          <span>نارنجی: 3</span>
+        </div>
+        <div class="color-item">
+          <div class="color-box" style="background: #FFFF00;"></div>
+          <span>زرد: 4</span>
+        </div>
+        <div class="color-item">
+          <div class="color-box" style="background: #00FF00;"></div>
+          <span>سبز: 5</span>
+        </div>
+        <div class="color-item">
+          <div class="color-box" style="background: #0000FF;"></div>
+          <span>آبی: 6</span>
+        </div>
+        <div class="color-item">
+          <div class="color-box" style="background: #800080;"></div>
+          <span>بنفش: 7</span>
+        </div>
+        <div class="color-item">
+          <div class="color-box" style="background: #808080;"></div>
+          <span>خاکستری: 8</span>
+        </div>
+        <div class="color-item">
+          <div class="color-box" style="background: #FFFFFF;"></div>
+          <span>سفید: 9</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const colorMap = {
+      0: '#000', 1: '#8B4513', 2: '#FF0000', 3: '#FFA500', 4: '#FFFF00',
+      5: '#00FF00', 6: '#0000FF', 7: '#800080', 8: '#808080', 9: '#FFFFFF'
+    };
+
+    function updateResistor() {
+      const band1 = document.getElementById('band1Select').value;
+      const band2 = document.getElementById('band2Select').value;
+      const band3 = document.getElementById('band3Select').value;
+      const band4 = document.getElementById('band4Select').value;
+
+      document.getElementById('band1').style.background = colorMap[band1];
+      document.getElementById('band2').style.background = colorMap[band2];
+      document.getElementById('band3').style.background = colorMap[Math.log10(band3)];
+      document.getElementById('band4').style.background = band4 == 5 ? '#FFD700' : '#C0C0C0';
+    }
+
+    function calculateResistance() {
+      const band1 = parseInt(document.getElementById('band1Select').value);
+      const band2 = parseInt(document.getElementById('band2Select').value);
+      const multiplier = parseInt(document.getElementById('band3Select').value);
+      const tolerance = parseInt(document.getElementById('band4Select').value);
+
+      const resistance = (band1 * 10 + band2) * multiplier;
+      const toleranceValue = resistance * tolerance / 100;
+
+      const resultDiv = document.getElementById('result');
+      let result = `مقاومت = ${resistance} اهم<br>`;
+      result += `تلرانس = ±${tolerance}% (±${toleranceValue.toFixed(2)} اهم)<br>`;
+      result += `محدوده: ${(resistance - toleranceValue).toFixed(2)} تا ${(resistance + toleranceValue).toFixed(2)} اهم`;
+
+      resultDiv.innerHTML = result;
+      resultDiv.style.display = 'block';
+    }
+
+    updateResistor();
+  </script>
+</body>
+</html>
