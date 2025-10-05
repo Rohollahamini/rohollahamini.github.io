@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ابزارک شهید زار‌نژاد</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="assets/logo.png" type="image/png" />
+</head>
+<body>
+  <header>
+    <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+      🌙
+    </button>
+    <img src="assets/logo.png" alt="لوگو مدرسه" class="logo" />
+    <h1>ابزارک شهید زار‌نژاد</h1>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="mohasebe">محاسبه</button>
+    <button class="tab" data-tab="pinout">پین‌خروجی</button>
+    <button class="tab" data-tab="resources">منابع</button>
+  </nav>
+
+  <main>
+    <!-- Search Bar -->
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" placeholder="جستجو در ابزارها..." id="searchInput">
+    </div>
+
+    <!-- تب محاسبه -->
+    <section id="mohasebe" class="tab-content active">
+      <h2>بخش محاسبه</h2>
+      <div class="card-container">
+        <a href="pages/mohasebe_rang.html" class="card">
+          <div class="card-content">
+            <h3 class="card-title">محاسبه رنگی مقاومت</h3>
+            <p class="card-description">محاسبه مقدار مقاومت بر اساس کدهای رنگی</p>
+          </div>
+          <div class="card-icon">🎨</div>
+        </a>
+        <a href="pages/mohasebe_tavan.html" class="card">
+          <div class="card-content">
+            <h3 class="card-title">محاسبه توان و جریان</h3>
+            <p class="card-description">محاسبه توان، جریان و ولتاژ در مدار</p>
+          </div>
+          <div class="card-icon">⚡</div>
+        </a>
+        <a href="pages/mohasebe_ohm.html" class="card">
+          <div class="card-content">
+            <h3 class="card-title">قانون اهم</h3>
+            <p class="card-description">محاسبات مربوط به قانون اهم</p>
+          </div>
+          <div class="card-icon">🔌</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- تب پین‌خروجی -->
+    <section id="pinout" class="tab-content">
+      <h2>بخش پین‌خروجی</h2>
+      <div class="card-container">
+        <a href="pages/pin_arduino.html" class="card">
+          <div class="card-content">
+            <h3 class="card-title">Arduino</h3>
+            <p class="card-description">پین‌آوت و مشخصات بردهای Arduino</p>
+          </div>
+          <div class="card-icon">🔹</div>
+        </a>
+        <a href="pages/pin_usb.html" class="card">
+          <div class="card-content">
+            <h3 class="card-title">USB</h3>
+            <p class="card-description">پین‌آوت و مشخصات کانکتورهای USB</p>
+          </div>
+          <div class="card-icon">🔹</div>
+        </a>
+        <a href="pages/pin_raspberry.html" class="card">
+          <div class="card-content">
+            <h3 class="card-title">Raspberry Pi</h3>
+            <p class="card-description">پین‌آوت و مشخصات بردهای Raspberry Pi</p>
+          </div>
+          <div class="card-icon">🔹</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- تب منابع -->
+    <section id="resources" class="tab-content">
+      <h2>منابع آموزشی</h2>
+      <div class="card-container">
+        <a href="pages/resources.html" class="card">
+          <div class="card-content">
+            <h3 class="card-title">آموزش‌ها</h3>
+            <p class="card-description">منابع آموزشی و راهنماهای الکترونیک</p>
+          </div>
+          <div class="card-icon">📘</div>
+        </a>
+        <a href="pages/about.html" class="card">
+          <div class="card-content">
+            <h3 class="card-title">درباره مدرسه</h3>
+            <p class="card-description">اطلاعات مدرسه شهید زار‌نژاد</p>
+          </div>
+          <div class="card-icon">🏫</div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>طراحی شده با ❤️ توسط دانش‌آموزان مدرسه شهید زار‌نژاد</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

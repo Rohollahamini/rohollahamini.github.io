@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>پین‌آوت USB - ابزارک شهید زار‌نژاد</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../assets/logo.png" type="image/png" />
+  <style>
+    .pinout-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .usb-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .usb-type {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 8px 32px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .usb-type::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .usb-type:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px var(--shadow-hover);
+    }
+    
+    .usb-type.selected {
+      border-color: var(--primary);
+      box-shadow: 0 8px 32px rgba(33, 150, 243, 0.3);
+    }
+    
+    .usb-type h3 {
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      font-size: 1.4rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .usb-visual {
+      width: 100%;
+      height: 120px;
+      background: linear-gradient(135deg, #424242, #616161);
+      border-radius: 12px;
+      margin: 1.5rem 0;
+      position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .usb-visual::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 60%;
+      background: linear-gradient(135deg, #2E7D32, #4CAF50);
+      border-radius: 8px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+    }
+    
+    .usb-specs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .spec-item {
+      background: var(--bg-hover);
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    
+    .spec-label {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .spec-value {
+      color: var(--text);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    
+    .pinout-details {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    
+    .pinout-details::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .pinout-details h3 {
+      color: var(--primary);
+      margin-bottom: 2rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .pin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .pin-item {
+      background: var(--bg-hover);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 2px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    
+    .pin-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: var(--primary);
+    }
+    
+    .pin-number {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .pin-name {
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    
+    .pin-function {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    
+    .pin-type {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 0.75rem;
+    }
+    
+    .pin-type.power {
+      background: rgba(255, 152, 0, 0.2);
+      color: #FF9800;
+    }
+    
+    .pin-type.data {
+      background: rgba(33, 150, 243, 0.2);
+      color: var(--primary);
+    }
+    
+    .pin-type.ground {
+      background: rgba(158, 158, 158, 0.2);
+      color: #9E9E9E;
+    }
+    
+    .pin-type.id {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4CAF50;
+    }
+    
+    .back-button {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 16px rgba(33, 150, 243, 0.3);
+    }
+    
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+    }
+    
+    .comparison-table {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    
+    .comparison-table::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    
+    th, td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    
+    th {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+    
+    td {
+      background: var(--bg-hover);
+      color: var(--text);
+    }
+    
+    tr:nth-child(even) td {
+      background: var(--bg-dark);
+    }
+    
+    @media (max-width: 768px) {
+      .pinout-container {
+        padding: 1rem;
+      }
+      
+      .usb-types {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .pin-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+      🌙
+    </button>
+    <img src="../assets/logo.png" alt="لوگو مدرسه" class="logo" />
+    <h1>پین‌آوت USB</h1>
+  </header>
+
+  <main>
+    <div class="pinout-container">
+      <button class="back-button" onclick="window.location.href='../index.html'">
+        ← بازگشت به صفحه اصلی
+      </button>
+
+      <div class="usb-types">
+        <div class="usb-type" data-type="usb-a">
+          <h3>USB Type-A</h3>
+          <div class="usb-visual"></div>
+          <div class="usb-specs">
+            <div class="spec-item">
+              <div class="spec-label">پین‌ها</div>
+              <div class="spec-value">4</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">ولتاژ</div>
+              <div class="spec-value">5V</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">جریان</div>
+              <div class="spec-value">500mA</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">سرعت</div>
+              <div class="spec-value">480Mbps</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="usb-type" data-type="usb-b">
+          <h3>USB Type-B</h3>
+          <div class="usb-visual"></div>
+          <div class="usb-specs">
+            <div class="spec-item">
+              <div class="spec-label">پین‌ها</div>
+              <div class="spec-value">4</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">ولتاژ</div>
+              <div class="spec-value">5V</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">جریان</div>
+              <div class="spec-value">500mA</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">سرعت</div>
+              <div class="spec-value">480Mbps</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="usb-type" data-type="usb-c">
+          <h3>USB Type-C</h3>
+          <div class="usb-visual"></div>
+          <div class="usb-specs">
+            <div class="spec-item">
+              <div class="spec-label">پین‌ها</div>
+              <div class="spec-value">24</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">ولتاژ</div>
+              <div class="spec-value">5-20V</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">جریان</div>
+              <div class="spec-value">3A</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">سرعت</div>
+              <div class="spec-value">10Gbps</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="usb-type" data-type="micro-usb">
+          <h3>Micro USB</h3>
+          <div class="usb-visual"></div>
+          <div class="usb-specs">
+            <div class="spec-item">
+              <div class="spec-label">پین‌ها</div>
+              <div class="spec-value">5</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">ولتاژ</div>
+              <div class="spec-value">5V</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">جریان</div>
+              <div class="spec-value">1.8A</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">سرعت</div>
+              <div class="spec-value">480Mbps</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pinout-details" id="pinoutDetails" style="display: none;">
+        <h3 id="pinoutTitle">پین‌آوت USB</h3>
+        <div class="pin-grid" id="pinGrid">
+          <!-- پین‌ها اینجا نمایش داده می‌شوند -->
+        </div>
+      </div>
+
+      <div class="comparison-table">
+        <h2>مقایسه انواع USB</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>نوع USB</th>
+                <th>تعداد پین</th>
+                <th>ولتاژ</th>
+                <th>جریان</th>
+                <th>سرعت انتقال</th>
+                <th>قابلیت شارژ</th>
+                <th>کاربرد</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>USB Type-A</td>
+                <td>4</td>
+                <td>5V</td>
+                <td>500mA</td>
+                <td>480 Mbps</td>
+                <td>بله</td>
+                <td>کامپیوتر، کیبورد، ماوس</td>
+              </tr>
+              <tr>
+                <td>USB Type-B</td>
+                <td>4</td>
+                <td>5V</td>
+                <td>500mA</td>
+                <td>480 Mbps</td>
+                <td>بله</td>
+                <td>پرینتر، اسکنر</td>
+              </tr>
+              <tr>
+                <td>USB Type-C</td>
+                <td>24</td>
+                <td>5-20V</td>
+                <td>3A</td>
+                <td>10 Gbps</td>
+                <td>بله (Power Delivery)</td>
+                <td>لپ‌تاپ، موبایل، تبلت</td>
+              </tr>
+              <tr>
+                <td>Micro USB</td>
+                <td>5</td>
+                <td>5V</td>
+                <td>1.8A</td>
+                <td>480 Mbps</td>
+                <td>بله</td>
+                <td>موبایل، تبلت</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>طراحی شده با ❤️ توسط دانش‌آموزان مدرسه شهید زار‌نژاد</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    let selectedUsbType = null;
+
+    // تنظیم رویدادها برای انتخاب نوع USB
+    document.querySelectorAll('.usb-type').forEach(type => {
+      type.addEventListener('click', function() {
+        // حذف انتخاب قبلی
+        document.querySelectorAll('.usb-type').forEach(usb => usb.classList.remove('selected'));
+        
+        // انتخاب جدید
+        this.classList.add('selected');
+        selectedUsbType = this.dataset.type;
+        
+        showPinoutDetails(selectedUsbType);
+      });
+    });
+
+    function showPinoutDetails(usbType) {
+      const details = getUsbPinout(usbType);
+      const detailsContainer = document.getElementById('pinoutDetails');
+      const pinGrid = document.getElementById('pinGrid');
+      const pinoutTitle = document.getElementById('pinoutTitle');
+      
+      pinoutTitle.textContent = `پین‌آوت ${details.title}`;
+      pinGrid.innerHTML = '';
+      
+      details.pins.forEach(pin => {
+        const pinItem = document.createElement('div');
+        pinItem.className = 'pin-item';
+        pinItem.innerHTML = `
+          <div class="pin-number">${pin.number}</div>
+          <div class="pin-name">${pin.name}</div>
+          <div class="pin-function">${pin.function}</div>
+          <div class="pin-type ${pin.type}">${pin.typeLabel}</div>
+        `;
+        pinGrid.appendChild(pinItem);
+      });
+      
+      detailsContainer.style.display = 'block';
+    }
+
+    function getUsbPinout(usbType) {
+      const pinouts = {
+        'usb-a': {
+          title: 'USB Type-A',
+          pins: [
+            {
+              number: '1',
+              name: 'VCC',
+              function: 'ولتاژ تغذیه +5V',
+              type: 'power',
+              typeLabel: 'Power'
+            },
+            {
+              number: '2',
+              name: 'D-',
+              function: 'داده منفی (Data Negative)',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: '3',
+              name: 'D+',
+              function: 'داده مثبت (Data Positive)',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: '4',
+              name: 'GND',
+              function: 'زمین (Ground)',
+              type: 'ground',
+              typeLabel: 'Ground'
+            }
+          ]
+        },
+        'usb-b': {
+          title: 'USB Type-B',
+          pins: [
+            {
+              number: '1',
+              name: 'VCC',
+              function: 'ولتاژ تغذیه +5V',
+              type: 'power',
+              typeLabel: 'Power'
+            },
+            {
+              number: '2',
+              name: 'D-',
+              function: 'داده منفی (Data Negative)',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: '3',
+              name: 'D+',
+              function: 'داده مثبت (Data Positive)',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: '4',
+              name: 'GND',
+              function: 'زمین (Ground)',
+              type: 'ground',
+              typeLabel: 'Ground'
+            }
+          ]
+        },
+        'usb-c': {
+          title: 'USB Type-C',
+          pins: [
+            {
+              number: 'A1',
+              name: 'GND',
+              function: 'زمین (Ground)',
+              type: 'ground',
+              typeLabel: 'Ground'
+            },
+            {
+              number: 'A2',
+              name: 'TX1+',
+              function: 'ارسال داده مثبت',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: 'A3',
+              name: 'TX1-',
+              function: 'ارسال داده منفی',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: 'A4',
+              name: 'VCC',
+              function: 'ولتاژ تغذیه',
+              type: 'power',
+              typeLabel: 'Power'
+            },
+            {
+              number: 'A5',
+              name: 'CC1',
+              function: 'کنترل کانال',
+              type: 'id',
+              typeLabel: 'Control'
+            },
+            {
+              number: 'A6',
+              name: 'D+',
+              function: 'داده مثبت USB 2.0',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: 'A7',
+              name: 'D-',
+              function: 'داده منفی USB 2.0',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: 'A8',
+              name: 'SBU1',
+              function: 'Sideband Use',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: 'A9',
+              name: 'VCC',
+              function: 'ولتاژ تغذیه',
+              type: 'power',
+              typeLabel: 'Power'
+            },
+            {
+              number: 'A10',
+              name: 'RX2-',
+              function: 'دریافت داده منفی',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: 'A11',
+              name: 'RX2+',
+              function: 'دریافت داده مثبت',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: 'A12',
+              name: 'GND',
+              function: 'زمین (Ground)',
+              type: 'ground',
+              typeLabel: 'Ground'
+            }
+          ]
+        },
+        'micro-usb': {
+          title: 'Micro USB',
+          pins: [
+            {
+              number: '1',
+              name: 'VCC',
+              function: 'ولتاژ تغذیه +5V',
+              type: 'power',
+              typeLabel: 'Power'
+            },
+            {
+              number: '2',
+              name: 'D-',
+              function: 'داده منفی (Data Negative)',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: '3',
+              name: 'D+',
+              function: 'داده مثبت (Data Positive)',
+              type: 'data',
+              typeLabel: 'Data'
+            },
+            {
+              number: '4',
+              name: 'ID',
+              function: 'شناسایی (Identification)',
+              type: 'id',
+              typeLabel: 'ID'
+            },
+            {
+              number: '5',
+              name: 'GND',
+              function: 'زمین (Ground)',
+              type: 'ground',
+              typeLabel: 'Ground'
+            }
+          ]
+        }
+      };
+      
+      return pinouts[usbType] || pinouts['usb-a'];
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,434 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+
+/* Light Theme (Default) */
+:root {
+  --primary: #2196F3;
+  --primary-dark: #1976D2;
+  --primary-light: #BBDEFB;
+  --accent: #FF4081;
+  --bg: #FAFAFA;
+  --bg-dark: #FFFFFF;
+  --bg-hover: #F5F5F5;
+  --text: #212121;
+  --text-secondary: #757575;
+  --text-light: #BDBDBD;
+  --border: #E0E0E0;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --shadow-hover: rgba(0, 0, 0, 0.15);
+  --radius: 8px;
+  --radius-large: 16px;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --primary: #4CAF50;
+  --primary-dark: #388E3C;
+  --primary-light: #81C784;
+  --accent: #FF5722;
+  --bg: #121212;
+  --bg-dark: #1E1E1E;
+  --bg-hover: #2A2A2A;
+  --text: #FFFFFF;
+  --text-secondary: #B0B0B0;
+  --text-light: #757575;
+  --border: #333333;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --shadow-hover: rgba(0, 0, 0, 0.4);
+}
+
+/* Green Theme */
+[data-theme="green"] {
+  --primary: #4CAF50;
+  --primary-dark: #388E3C;
+  --primary-light: #A5D6A7;
+  --accent: #FF9800;
+  --bg: #F1F8E9;
+  --bg-dark: #FFFFFF;
+  --bg-hover: #E8F5E8;
+  --text: #1B5E20;
+  --text-secondary: #2E7D32;
+  --text-light: #66BB6A;
+  --border: #C8E6C9;
+  --shadow: rgba(76, 175, 80, 0.1);
+  --shadow-hover: rgba(76, 175, 80, 0.2);
+}
+
+/* Green-Black Theme */
+[data-theme="green-black"] {
+  --primary: #00E676;
+  --primary-dark: #00C853;
+  --primary-light: #69F0AE;
+  --accent: #FF6D00;
+  --bg: #0A0A0A;
+  --bg-dark: #1A1A1A;
+  --bg-hover: #2A2A2A;
+  --text: #00E676;
+  --text-secondary: #4CAF50;
+  --text-light: #81C784;
+  --border: #333333;
+  --shadow: rgba(0, 230, 118, 0.1);
+  --shadow-hover: rgba(0, 230, 118, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Vazirmatn', sans-serif;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* 🔹 Header */
+header {
+  background: var(--primary);
+  padding: 1rem 0;
+  text-align: center;
+  font-weight: 500;
+  font-size: 1.4rem;
+  color: white;
+  box-shadow: 0 2px 8px var(--shadow);
+  position: relative;
+}
+
+header h1 {
+  font-weight: 500;
+  margin: 0;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.theme-toggle:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* 🟩 Tabs Navigation */
+nav.tabs {
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--bg-dark);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 3px var(--shadow);
+}
+
+nav.tabs button {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 1rem 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+nav.tabs button:hover {
+  color: var(--primary);
+  background-color: var(--bg-hover);
+}
+
+nav.tabs button.active {
+  color: var(--primary);
+  background-color: var(--bg-hover);
+  font-weight: 600;
+}
+
+nav.tabs button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* 📱 Main content */
+main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  animation: fadeIn 0.4s ease;
+}
+
+main h2 {
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-light);
+}
+
+/* Tab Content Management */
+.tab-content {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Search Bar */
+.search-container {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-large);
+  font-size: 1rem;
+  background: var(--bg-dark);
+  color: var(--text);
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 📦 Cards */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--bg-dark);
+  border-radius: var(--radius-large);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text);
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--shadow-hover);
+  background: var(--bg-hover);
+}
+
+.card:hover::before {
+  transform: scaleY(1);
+}
+
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.card-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.card-icon {
+  font-size: 2rem;
+  color: var(--primary);
+  margin-left: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .card-icon {
+  transform: scale(1.1);
+}
+
+/* 🦶 Footer */
+footer {
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  background: var(--bg-dark);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -1px 3px var(--shadow);
+}
+
+footer p {
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Theme-specific improvements */
+[data-theme="dark"] .search-input {
+  background: var(--bg-dark);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+[data-theme="dark"] .search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+[data-theme="green"] .search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+[data-theme="green-black"] .search-input {
+  background: var(--bg-dark);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+[data-theme="green-black"] .search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1);
+}
+
+/* Smooth theme transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
+  main {
+    padding: 1rem;
+  }
+  
+  .card-container {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .card {
+    padding: 1.25rem;
+  }
+  
+  nav.tabs button {
+    font-size: 0.9rem;
+    padding: 0.875rem 0;
+  }
+  
+  header {
+    padding: 0.875rem 0;
+  }
+  
+  header h1 {
+    font-size: 1.2rem;
+  }
+  
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    padding: 0.75rem;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+  
+  .card-title {
+    font-size: 1rem;
+  }
+  
+  .card-description {
+    font-size: 0.85rem;
+  }
+}

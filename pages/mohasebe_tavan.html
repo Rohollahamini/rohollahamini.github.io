@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>محاسبه توان و جریان - ابزارک شهید زار‌نژاد</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../assets/logo.png" type="image/png" />
+  <style>
+    .calculator-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .calculator-section {
+      background: var(--bg-dark);
+      border-radius: var(--radius-large);
+      padding: 2rem;
+      box-shadow: 0 4px 16px var(--shadow);
+      border: 1px solid var(--border);
+    }
+    
+    .calculator-section h2 {
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      font-size: 1.3rem;
+      text-align: center;
+    }
+    
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .input-group label {
+      display: block;
+      color: var(--text);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    
+    .input-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      background: var(--bg-hover);
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+    
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+    
+    .unit-selector {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .unit-option {
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-hover);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    
+    .unit-option.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .calculate-button {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: var(--radius);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+    
+    .calculate-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .result-display {
+      background: var(--bg-dark);
+      border-radius: var(--radius-large);
+      padding: 2rem;
+      box-shadow: 0 4px 16px var(--shadow);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    
+    .result-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 1rem 0;
+    }
+    
+    .result-formula {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .back-button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+    }
+    
+    .back-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .formula-section {
+      background: var(--bg-dark);
+      border-radius: var(--radius-large);
+      padding: 2rem;
+      box-shadow: 0 4px 16px var(--shadow);
+      border: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+    
+    .formula-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .formula-item {
+      background: var(--bg-hover);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      text-align: center;
+    }
+    
+    .formula-title {
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .formula-text {
+      color: var(--text);
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .formula-example {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+      .calculator-container {
+        padding: 1rem;
+      }
+      
+      .calculator-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .result-value {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+      🌙
+    </button>
+    <img src="../assets/logo.png" alt="لوگو مدرسه" class="logo" />
+    <h1>محاسبه توان و جریان</h1>
+  </header>
+
+  <main>
+    <div class="calculator-container">
+      <button class="back-button" onclick="window.location.href='../index.html'">
+        ← بازگشت به صفحه اصلی
+      </button>
+
+      <div class="calculator-grid">
+        <!-- محاسبه توان -->
+        <div class="calculator-section">
+          <h2>محاسبه توان (P)</h2>
+          <div class="input-group">
+            <label>ولتاژ (V)</label>
+            <input type="number" id="voltage" placeholder="مثال: 12" step="0.1">
+            <div class="unit-selector">
+              <div class="unit-option active" data-unit="V">V</div>
+              <div class="unit-option" data-unit="mV">mV</div>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>جریان (I)</label>
+            <input type="number" id="current" placeholder="مثال: 2.5" step="0.1">
+            <div class="unit-selector">
+              <div class="unit-option active" data-unit="A">A</div>
+              <div class="unit-option" data-unit="mA">mA</div>
+            </div>
+          </div>
+          <button class="calculate-button" onclick="calculatePower()">محاسبه توان</button>
+        </div>
+
+        <!-- محاسبه جریان -->
+        <div class="calculator-section">
+          <h2>محاسبه جریان (I)</h2>
+          <div class="input-group">
+            <label>ولتاژ (V)</label>
+            <input type="number" id="voltage2" placeholder="مثال: 12" step="0.1">
+            <div class="unit-selector">
+              <div class="unit-option active" data-unit="V">V</div>
+              <div class="unit-option" data-unit="mV">mV</div>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>مقاومت (R)</label>
+            <input type="number" id="resistance" placeholder="مثال: 1000" step="0.1">
+            <div class="unit-selector">
+              <div class="unit-option active" data-unit="Ω">Ω</div>
+              <div class="unit-option" data-unit="kΩ">kΩ</div>
+              <div class="unit-option" data-unit="MΩ">MΩ</div>
+            </div>
+          </div>
+          <button class="calculate-button" onclick="calculateCurrent()">محاسبه جریان</button>
+        </div>
+
+        <!-- محاسبه ولتاژ -->
+        <div class="calculator-section">
+          <h2>محاسبه ولتاژ (V)</h2>
+          <div class="input-group">
+            <label>جریان (I)</label>
+            <input type="number" id="current2" placeholder="مثال: 2.5" step="0.1">
+            <div class="unit-selector">
+              <div class="unit-option active" data-unit="A">A</div>
+              <div class="unit-option" data-unit="mA">mA</div>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>مقاومت (R)</label>
+            <input type="number" id="resistance2" placeholder="مثال: 1000" step="0.1">
+            <div class="unit-selector">
+              <div class="unit-option active" data-unit="Ω">Ω</div>
+              <div class="unit-option" data-unit="kΩ">kΩ</div>
+              <div class="unit-option" data-unit="MΩ">MΩ</div>
+            </div>
+          </div>
+          <button class="calculate-button" onclick="calculateVoltage()">محاسبه ولتاژ</button>
+        </div>
+
+        <!-- محاسبه مقاومت -->
+        <div class="calculator-section">
+          <h2>محاسبه مقاومت (R)</h2>
+          <div class="input-group">
+            <label>ولتاژ (V)</label>
+            <input type="number" id="voltage3" placeholder="مثال: 12" step="0.1">
+            <div class="unit-selector">
+              <div class="unit-option active" data-unit="V">V</div>
+              <div class="unit-option" data-unit="mV">mV</div>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>جریان (I)</label>
+            <input type="number" id="current3" placeholder="مثال: 2.5" step="0.1">
+            <div class="unit-selector">
+              <div class="unit-option active" data-unit="A">A</div>
+              <div class="unit-option" data-unit="mA">mA</div>
+            </div>
+          </div>
+          <button class="calculate-button" onclick="calculateResistance()">محاسبه مقاومت</button>
+        </div>
+      </div>
+
+      <div class="result-display" id="resultDisplay" style="display: none;">
+        <div class="result-formula" id="resultFormula"></div>
+        <div class="result-value" id="resultValue"></div>
+      </div>
+
+      <div class="formula-section">
+        <h2>فرمول‌های الکتریکی</h2>
+        <div class="formula-grid">
+          <div class="formula-item">
+            <div class="formula-title">قانون اهم</div>
+            <div class="formula-text">V = I × R</div>
+            <div class="formula-example">ولتاژ = جریان × مقاومت</div>
+          </div>
+          <div class="formula-item">
+            <div class="formula-title">توان</div>
+            <div class="formula-text">P = V × I</div>
+            <div class="formula-example">توان = ولتاژ × جریان</div>
+          </div>
+          <div class="formula-item">
+            <div class="formula-title">توان (با مقاومت)</div>
+            <div class="formula-text">P = V² / R</div>
+            <div class="formula-example">توان = ولتاژ² / مقاومت</div>
+          </div>
+          <div class="formula-item">
+            <div class="formula-title">توان (با جریان)</div>
+            <div class="formula-text">P = I² × R</div>
+            <div class="formula-example">توان = جریان² × مقاومت</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>طراحی شده با ❤️ توسط دانش‌آموزان مدرسه شهید زار‌نژاد</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    // تنظیم رویدادها برای انتخاب واحد
+    document.querySelectorAll('.unit-option').forEach(option => {
+      option.addEventListener('click', function() {
+        const group = this.closest('.unit-selector');
+        group.querySelectorAll('.unit-option').forEach(opt => opt.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    function getUnitMultiplier(unit) {
+      const multipliers = {
+        'V': 1,
+        'mV': 0.001,
+        'A': 1,
+        'mA': 0.001,
+        'Ω': 1,
+        'kΩ': 1000,
+        'MΩ': 1000000
+      };
+      return multipliers[unit] || 1;
+    }
+
+    function getActiveUnit(selector) {
+      return selector.querySelector('.unit-option.active').dataset.unit;
+    }
+
+    function showResult(formula, value, unit) {
+      document.getElementById('resultFormula').textContent = formula;
+      document.getElementById('resultValue').textContent = value + ' ' + unit;
+      document.getElementById('resultDisplay').style.display = 'block';
+    }
+
+    function calculatePower() {
+      const voltage = parseFloat(document.getElementById('voltage').value);
+      const current = parseFloat(document.getElementById('current').value);
+      
+      if (!voltage || !current) {
+        alert('لطفاً مقادیر ولتاژ و جریان را وارد کنید');
+        return;
+      }
+
+      const voltageUnit = getActiveUnit(document.querySelector('#voltage').nextElementSibling);
+      const currentUnit = getActiveUnit(document.querySelector('#current').nextElementSibling);
+      
+      const voltageValue = voltage * getUnitMultiplier(voltageUnit);
+      const currentValue = current * getUnitMultiplier(currentUnit);
+      
+      const power = voltageValue * currentValue;
+      
+      let powerUnit = 'W';
+      let powerValue = power;
+      
+      if (power >= 1000) {
+        powerValue = (power / 1000).toFixed(3);
+        powerUnit = 'kW';
+      } else if (power >= 1) {
+        powerValue = power.toFixed(3);
+        powerUnit = 'W';
+      } else {
+        powerValue = (power * 1000).toFixed(3);
+        powerUnit = 'mW';
+      }
+      
+      showResult('P = V × I', powerValue, powerUnit);
+    }
+
+    function calculateCurrent() {
+      const voltage = parseFloat(document.getElementById('voltage2').value);
+      const resistance = parseFloat(document.getElementById('resistance').value);
+      
+      if (!voltage || !resistance) {
+        alert('لطفاً مقادیر ولتاژ و مقاومت را وارد کنید');
+        return;
+      }
+
+      const voltageUnit = getActiveUnit(document.querySelector('#voltage2').nextElementSibling);
+      const resistanceUnit = getActiveUnit(document.querySelector('#resistance').nextElementSibling);
+      
+      const voltageValue = voltage * getUnitMultiplier(voltageUnit);
+      const resistanceValue = resistance * getUnitMultiplier(resistanceUnit);
+      
+      const current = voltageValue / resistanceValue;
+      
+      let currentUnit = 'A';
+      let currentValue = current;
+      
+      if (current >= 1) {
+        currentValue = current.toFixed(3);
+        currentUnit = 'A';
+      } else {
+        currentValue = (current * 1000).toFixed(3);
+        currentUnit = 'mA';
+      }
+      
+      showResult('I = V / R', currentValue, currentUnit);
+    }
+
+    function calculateVoltage() {
+      const current = parseFloat(document.getElementById('current2').value);
+      const resistance = parseFloat(document.getElementById('resistance2').value);
+      
+      if (!current || !resistance) {
+        alert('لطفاً مقادیر جریان و مقاومت را وارد کنید');
+        return;
+      }
+
+      const currentUnit = getActiveUnit(document.querySelector('#current2').nextElementSibling);
+      const resistanceUnit = getActiveUnit(document.querySelector('#resistance2').nextElementSibling);
+      
+      const currentValue = current * getUnitMultiplier(currentUnit);
+      const resistanceValue = resistance * getUnitMultiplier(resistanceUnit);
+      
+      const voltage = currentValue * resistanceValue;
+      
+      let voltageUnit = 'V';
+      let voltageValue = voltage;
+      
+      if (voltage >= 1) {
+        voltageValue = voltage.toFixed(3);
+        voltageUnit = 'V';
+      } else {
+        voltageValue = (voltage * 1000).toFixed(3);
+        voltageUnit = 'mV';
+      }
+      
+      showResult('V = I × R', voltageValue, voltageUnit);
+    }
+
+    function calculateResistance() {
+      const voltage = parseFloat(document.getElementById('voltage3').value);
+      const current = parseFloat(document.getElementById('current3').value);
+      
+      if (!voltage || !current) {
+        alert('لطفاً مقادیر ولتاژ و جریان را وارد کنید');
+        return;
+      }
+
+      const voltageUnit = getActiveUnit(document.querySelector('#voltage3').nextElementSibling);
+      const currentUnit = getActiveUnit(document.querySelector('#current3').nextElementSibling);
+      
+      const voltageValue = voltage * getUnitMultiplier(voltageUnit);
+      const currentValue = current * getUnitMultiplier(currentUnit);
+      
+      const resistance = voltageValue / currentValue;
+      
+      let resistanceUnit = 'Ω';
+      let resistanceValue = resistance;
+      
+      if (resistance >= 1000000) {
+        resistanceValue = (resistance / 1000000).toFixed(3);
+        resistanceUnit = 'MΩ';
+      } else if (resistance >= 1000) {
+        resistanceValue = (resistance / 1000).toFixed(3);
+        resistanceUnit = 'kΩ';
+      } else {
+        resistanceValue = resistance.toFixed(3);
+        resistanceUnit = 'Ω';
+      }
+      
+      showResult('R = V / I', resistanceValue, resistanceUnit);
+    }
+  </script>
+</body>
+</html>

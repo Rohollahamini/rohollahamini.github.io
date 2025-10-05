@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>محاسبه رنگی مقاومت - ابزارک شهید زار‌نژاد</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../assets/logo.png" type="image/png" />
+  <style>
+    .calculator-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .resistor-display {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      margin-bottom: 3rem;
+      text-align: center;
+      box-shadow: 0 8px 32px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .resistor-display::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .resistor-3d {
+      width: 400px;
+      height: 80px;
+      margin: 2rem auto;
+      position: relative;
+      perspective: 1000px;
+    }
+    
+    .resistor-body {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        #8B4513 0%, 
+        #8B4513 12%, 
+        var(--band1, #000) 12%, 
+        var(--band1, #000) 22%, 
+        var(--band2, #000) 22%, 
+        var(--band2, #000) 32%, 
+        var(--band3, #000) 32%, 
+        var(--band3, #000) 42%, 
+        var(--band4, #000) 42%, 
+        var(--band4, #000) 52%, 
+        #8B4513 52%, 
+        #8B4513 100%);
+      border-radius: 40px;
+      position: relative;
+      transform: rotateX(15deg) rotateY(-5deg);
+      box-shadow: 
+        0 10px 20px rgba(0,0,0,0.3),
+        inset 0 2px 4px rgba(255,255,255,0.1),
+        inset 0 -2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .resistor-body::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 0;
+      right: 0;
+      height: 96px;
+      background: linear-gradient(90deg, 
+        #C0C0C0 0%, 
+        #C0C0C0 12%, 
+        var(--band1, #000) 12%, 
+        var(--band1, #000) 22%, 
+        var(--band2, #000) 22%, 
+        var(--band2, #000) 32%, 
+        var(--band3, #000) 32%, 
+        var(--band3, #000) 42%, 
+        var(--band4, #000) 42%, 
+        var(--band4, #000) 52%, 
+        #C0C0C0 52%, 
+        #C0C0C0 100%);
+      border-radius: 48px;
+      z-index: -1;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .resistor-leads {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, #C0C0C0, #E0E0E0);
+      border-radius: 2px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .resistor-leads.left {
+      left: -60px;
+    }
+    
+    .resistor-leads.right {
+      right: -60px;
+    }
+    
+    .resistor-leads::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #A0A0A0, #C0C0C0);
+      border-radius: 3px;
+    }
+    
+    .band-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .band-group {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 6px 24px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .band-group::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .band-group h3 {
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .color-options {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.75rem;
+    }
+    
+    .color-option {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      border: 3px solid var(--border);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .color-option::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border-radius: 15px;
+      background: linear-gradient(45deg, var(--primary), var(--accent));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .color-option:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    
+    .color-option.selected {
+      border-color: var(--primary);
+      transform: translateY(-2px) scale(1.1);
+      box-shadow: 0 6px 16px rgba(33, 150, 243, 0.3);
+    }
+    
+    .color-option.selected::before {
+      opacity: 1;
+    }
+    
+    .color-label {
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    
+    .result-section {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .result-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .result-value {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 2rem 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      letter-spacing: 1px;
+    }
+    
+    .result-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    .detail-item {
+      background: linear-gradient(135deg, var(--bg-hover) 0%, var(--bg-dark) 100%);
+      padding: 2rem;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .detail-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .detail-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    
+    .detail-label {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    
+    .detail-value {
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.4rem;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .back-button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+    }
+    
+    .back-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+      .calculator-container {
+        padding: 1rem;
+      }
+      
+      .resistor-visual {
+        width: 250px;
+        height: 50px;
+      }
+      
+      .color-options {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .color-option {
+        width: 35px;
+        height: 35px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+      🌙
+    </button>
+    <img src="../assets/logo.png" alt="لوگو مدرسه" class="logo" />
+    <h1>محاسبه رنگی مقاومت</h1>
+  </header>
+
+  <main>
+    <div class="calculator-container">
+      <button class="back-button" onclick="window.location.href='../index.html'">
+        ← بازگشت به صفحه اصلی
+      </button>
+
+      <div class="resistor-display">
+        <h2>نمایش مقاومت سه‌بعدی</h2>
+        <div class="resistor-3d">
+          <div class="resistor-leads left"></div>
+          <div class="resistor-body" id="resistorBody"></div>
+          <div class="resistor-leads right"></div>
+        </div>
+        <div class="result-value" id="resultValue">0 Ω</div>
+      </div>
+
+      <div class="band-selector">
+        <div class="band-group">
+          <h3>نوار اول (رقم اول)</h3>
+          <div class="color-options" id="band1Options">
+            <div class="color-option" data-color="black" data-value="0" style="background: #000;" title="سیاه - 0">
+              <div class="color-label">0</div>
+            </div>
+            <div class="color-option" data-color="brown" data-value="1" style="background: #8B4513;" title="قهوه‌ای - 1">
+              <div class="color-label">1</div>
+            </div>
+            <div class="color-option" data-color="red" data-value="2" style="background: #FF0000;" title="قرمز - 2">
+              <div class="color-label">2</div>
+            </div>
+            <div class="color-option" data-color="orange" data-value="3" style="background: #FFA500;" title="نارنجی - 3">
+              <div class="color-label">3</div>
+            </div>
+            <div class="color-option" data-color="yellow" data-value="4" style="background: #FFFF00;" title="زرد - 4">
+              <div class="color-label">4</div>
+            </div>
+            <div class="color-option" data-color="green" data-value="5" style="background: #008000;" title="سبز - 5">
+              <div class="color-label">5</div>
+            </div>
+            <div class="color-option" data-color="blue" data-value="6" style="background: #0000FF;" title="آبی - 6">
+              <div class="color-label">6</div>
+            </div>
+            <div class="color-option" data-color="violet" data-value="7" style="background: #800080;" title="بنفش - 7">
+              <div class="color-label">7</div>
+            </div>
+            <div class="color-option" data-color="gray" data-value="8" style="background: #808080;" title="خاکستری - 8">
+              <div class="color-label">8</div>
+            </div>
+            <div class="color-option" data-color="white" data-value="9" style="background: #FFF; border: 2px solid #ccc;" title="سفید - 9">
+              <div class="color-label">9</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="band-group">
+          <h3>نوار دوم (رقم دوم)</h3>
+          <div class="color-options" id="band2Options">
+            <div class="color-option" data-color="black" data-value="0" style="background: #000;"></div>
+            <div class="color-option" data-color="brown" data-value="1" style="background: #8B4513;"></div>
+            <div class="color-option" data-color="red" data-value="2" style="background: #FF0000;"></div>
+            <div class="color-option" data-color="orange" data-value="3" style="background: #FFA500;"></div>
+            <div class="color-option" data-color="yellow" data-value="4" style="background: #FFFF00;"></div>
+            <div class="color-option" data-color="green" data-value="5" style="background: #008000;"></div>
+            <div class="color-option" data-color="blue" data-value="6" style="background: #0000FF;"></div>
+            <div class="color-option" data-color="violet" data-value="7" style="background: #800080;"></div>
+            <div class="color-option" data-color="gray" data-value="8" style="background: #808080;"></div>
+            <div class="color-option" data-color="white" data-value="9" style="background: #FFF;"></div>
+          </div>
+        </div>
+
+        <div class="band-group">
+          <h3>نوار سوم (ضریب)</h3>
+          <div class="color-options" id="band3Options">
+            <div class="color-option" data-color="black" data-value="1" style="background: #000;"></div>
+            <div class="color-option" data-color="brown" data-value="10" style="background: #8B4513;"></div>
+            <div class="color-option" data-color="red" data-value="100" style="background: #FF0000;"></div>
+            <div class="color-option" data-color="orange" data-value="1000" style="background: #FFA500;"></div>
+            <div class="color-option" data-color="yellow" data-value="10000" style="background: #FFFF00;"></div>
+            <div class="color-option" data-color="green" data-value="100000" style="background: #008000;"></div>
+            <div class="color-option" data-color="blue" data-value="1000000" style="background: #0000FF;"></div>
+            <div class="color-option" data-color="violet" data-value="10000000" style="background: #800080;"></div>
+            <div class="color-option" data-color="gray" data-value="100000000" style="background: #808080;"></div>
+            <div class="color-option" data-color="white" data-value="1000000000" style="background: #FFF;"></div>
+          </div>
+        </div>
+
+        <div class="band-group">
+          <h3>نوار چهارم (تلرانس)</h3>
+          <div class="color-options" id="band4Options">
+            <div class="color-option" data-color="brown" data-value="1" style="background: #8B4513;"></div>
+            <div class="color-option" data-color="red" data-value="2" style="background: #FF0000;"></div>
+            <div class="color-option" data-color="green" data-value="0.5" style="background: #008000;"></div>
+            <div class="color-option" data-color="blue" data-value="0.25" style="background: #0000FF;"></div>
+            <div class="color-option" data-color="violet" data-value="0.1" style="background: #800080;"></div>
+            <div class="color-option" data-color="gray" data-value="0.05" style="background: #808080;"></div>
+            <div class="color-option" data-color="gold" data-value="5" style="background: #FFD700;"></div>
+            <div class="color-option" data-color="silver" data-value="10" style="background: #C0C0C0;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <h2>نتیجه محاسبه</h2>
+        <div class="result-details" id="resultDetails">
+          <div class="detail-item">
+            <div class="detail-label">مقدار مقاومت</div>
+            <div class="detail-value" id="resistanceValue">0 Ω</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">تلرانس</div>
+            <div class="detail-value" id="toleranceValue">±0%</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">حداقل مقدار</div>
+            <div class="detail-value" id="minValue">0 Ω</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">حداکثر مقدار</div>
+            <div class="detail-value" id="maxValue">0 Ω</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>طراحی شده با ❤️ توسط دانش‌آموزان مدرسه شهید زار‌نژاد</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    // مقاومت رنگی محاسبه
+    let selectedBands = {
+      band1: null,
+      band2: null,
+      band3: null,
+      band4: null
+    };
+
+    // تنظیم رویدادها برای انتخاب رنگ
+    document.querySelectorAll('.color-option').forEach(option => {
+      option.addEventListener('click', function() {
+        const bandGroup = this.closest('.band-group');
+        const bandId = bandGroup.querySelector('h3').textContent.includes('اول') ? 'band1' :
+                      bandGroup.querySelector('h3').textContent.includes('دوم') ? 'band2' :
+                      bandGroup.querySelector('h3').textContent.includes('سوم') ? 'band3' : 'band4';
+        
+        // حذف انتخاب قبلی
+        bandGroup.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+        
+        // انتخاب جدید
+        this.classList.add('selected');
+        selectedBands[bandId] = {
+          color: this.dataset.color,
+          value: parseFloat(this.dataset.value)
+        };
+        
+        updateResistor();
+      });
+    });
+
+    function updateResistor() {
+      const resistor = document.getElementById('resistorBody');
+      const resultValue = document.getElementById('resultValue');
+      const resistanceValue = document.getElementById('resistanceValue');
+      const toleranceValue = document.getElementById('toleranceValue');
+      const minValue = document.getElementById('minValue');
+      const maxValue = document.getElementById('maxValue');
+
+      // تنظیم رنگ‌های نوارها
+      if (selectedBands.band1) {
+        resistor.style.setProperty('--band1', getColorCode(selectedBands.band1.color));
+      }
+      if (selectedBands.band2) {
+        resistor.style.setProperty('--band2', getColorCode(selectedBands.band2.color));
+      }
+      if (selectedBands.band3) {
+        resistor.style.setProperty('--band3', getColorCode(selectedBands.band3.color));
+      }
+      if (selectedBands.band4) {
+        resistor.style.setProperty('--band4', getColorCode(selectedBands.band4.color));
+      }
+
+      // محاسبه مقدار مقاومت
+      if (selectedBands.band1 && selectedBands.band2 && selectedBands.band3) {
+        const resistance = (selectedBands.band1.value * 10 + selectedBands.band2.value) * selectedBands.band3.value;
+        const tolerance = selectedBands.band4 ? selectedBands.band4.value : 0;
+        
+        const formattedResistance = formatResistance(resistance);
+        const tolerancePercent = tolerance;
+        
+        const minResistance = resistance * (1 - tolerancePercent / 100);
+        const maxResistance = resistance * (1 + tolerancePercent / 100);
+        
+        resultValue.textContent = formattedResistance;
+        resistanceValue.textContent = formattedResistance;
+        toleranceValue.textContent = `±${tolerancePercent}%`;
+        minValue.textContent = formatResistance(minResistance);
+        maxValue.textContent = formatResistance(maxResistance);
+      } else {
+        resultValue.textContent = '0 Ω';
+        resistanceValue.textContent = '0 Ω';
+        toleranceValue.textContent = '±0%';
+        minValue.textContent = '0 Ω';
+        maxValue.textContent = '0 Ω';
+      }
+    }
+
+    function getColorCode(color) {
+      const colors = {
+        'black': '#000000',
+        'brown': '#8B4513',
+        'red': '#FF0000',
+        'orange': '#FFA500',
+        'yellow': '#FFFF00',
+        'green': '#008000',
+        'blue': '#0000FF',
+        'violet': '#800080',
+        'gray': '#808080',
+        'white': '#FFFFFF',
+        'gold': '#FFD700',
+        'silver': '#C0C0C0'
+      };
+      return colors[color] || '#000000';
+    }
+
+    function formatResistance(value) {
+      if (value >= 1000000) {
+        return (value / 1000000).toFixed(2) + ' MΩ';
+      } else if (value >= 1000) {
+        return (value / 1000).toFixed(2) + ' kΩ';
+      } else {
+        return value.toFixed(0) + ' Ω';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>پین‌آوت Arduino - ابزارک شهید زار‌نژاد</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../assets/logo.png" type="image/png" />
+  <style>
+    .pinout-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .arduino-board {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 8px 32px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .arduino-board::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .board-visual {
+      width: 100%;
+      max-width: 800px;
+      height: 500px;
+      margin: 2rem auto;
+      background: linear-gradient(135deg, #2E7D32, #4CAF50);
+      border-radius: 20px;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    
+    .board-visual::before {
+      content: 'ARDUINO UNO R3';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+    }
+    
+    .pin-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    
+    .pin-section {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 6px 24px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .pin-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .pin-section h3 {
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .pin-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .pin-item {
+      background: var(--bg-hover);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 2px solid var(--border);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .pin-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: var(--primary);
+    }
+    
+    .pin-item.selected {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      box-shadow: 0 4px 16px rgba(33, 150, 243, 0.3);
+    }
+    
+    .pin-number {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .pin-function {
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .pin-type {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    
+    .pin-type.digital {
+      background: rgba(33, 150, 243, 0.2);
+      color: var(--primary);
+    }
+    
+    .pin-type.analog {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4CAF50;
+    }
+    
+    .pin-type.power {
+      background: rgba(255, 152, 0, 0.2);
+      color: #FF9800;
+    }
+    
+    .pin-type.ground {
+      background: rgba(158, 158, 158, 0.2);
+      color: #9E9E9E;
+    }
+    
+    .pin-details {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    
+    .pin-details::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .pin-details h3 {
+      color: var(--primary);
+      margin-bottom: 2rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .detail-item {
+      background: var(--bg-hover);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    
+    .detail-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .detail-value {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .back-button {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 16px rgba(33, 150, 243, 0.3);
+    }
+    
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+    }
+    
+    .specifications {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    
+    .specifications::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .spec-item {
+      background: var(--bg-hover);
+      padding: 2rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    
+    .spec-title {
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+    
+    .spec-value {
+      color: var(--text);
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
+      .pinout-container {
+        padding: 1rem;
+      }
+      
+      .pin-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .board-visual {
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+      🌙
+    </button>
+    <img src="../assets/logo.png" alt="لوگو مدرسه" class="logo" />
+    <h1>پین‌آوت Arduino</h1>
+  </header>
+
+  <main>
+    <div class="pinout-container">
+      <button class="back-button" onclick="window.location.href='../index.html'">
+        ← بازگشت به صفحه اصلی
+      </button>
+
+      <div class="arduino-board">
+        <h2>Arduino Uno R3</h2>
+        <div class="board-visual"></div>
+        <p style="color: var(--text-secondary); text-align: center; margin-top: 1rem;">
+          میکروکنترلر ATmega328P با 14 پین دیجیتال و 6 پین آنالوگ
+        </p>
+      </div>
+
+      <div class="pin-grid">
+        <div class="pin-section">
+          <h3>پین‌های دیجیتال</h3>
+          <div class="pin-list" id="digitalPins">
+            <div class="pin-item" data-pin="0" data-type="digital">
+              <div class="pin-number">D0 (RX)</div>
+              <div class="pin-function">دریافت سریال</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="1" data-type="digital">
+              <div class="pin-number">D1 (TX)</div>
+              <div class="pin-function">ارسال سریال</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="2" data-type="digital">
+              <div class="pin-number">D2</div>
+              <div class="pin-function">پین دیجیتال</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="3" data-type="digital">
+              <div class="pin-number">D3 (PWM)</div>
+              <div class="pin-function">PWM - Timer 2</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="4" data-type="digital">
+              <div class="pin-number">D4</div>
+              <div class="pin-function">پین دیجیتال</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="5" data-type="digital">
+              <div class="pin-number">D5 (PWM)</div>
+              <div class="pin-function">PWM - Timer 0</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="6" data-type="digital">
+              <div class="pin-number">D6 (PWM)</div>
+              <div class="pin-function">PWM - Timer 0</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="7" data-type="digital">
+              <div class="pin-number">D7</div>
+              <div class="pin-function">پین دیجیتال</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="8" data-type="digital">
+              <div class="pin-number">D8</div>
+              <div class="pin-function">پین دیجیتال</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="9" data-type="digital">
+              <div class="pin-number">D9 (PWM)</div>
+              <div class="pin-function">PWM - Timer 1</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="10" data-type="digital">
+              <div class="pin-number">D10 (PWM)</div>
+              <div class="pin-function">PWM - Timer 1</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="11" data-type="digital">
+              <div class="pin-number">D11 (PWM)</div>
+              <div class="pin-function">PWM - Timer 2</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="12" data-type="digital">
+              <div class="pin-number">D12</div>
+              <div class="pin-function">پین دیجیتال</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+            <div class="pin-item" data-pin="13" data-type="digital">
+              <div class="pin-number">D13 (LED)</div>
+              <div class="pin-function">LED داخلی</div>
+              <div class="pin-type digital">Digital</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pin-section">
+          <h3>پین‌های آنالوگ و تغذیه</h3>
+          <div class="pin-list" id="analogPins">
+            <div class="pin-item" data-pin="A0" data-type="analog">
+              <div class="pin-number">A0</div>
+              <div class="pin-function">ورودی آنالوگ</div>
+              <div class="pin-type analog">Analog</div>
+            </div>
+            <div class="pin-item" data-pin="A1" data-type="analog">
+              <div class="pin-number">A1</div>
+              <div class="pin-function">ورودی آنالوگ</div>
+              <div class="pin-type analog">Analog</div>
+            </div>
+            <div class="pin-item" data-pin="A2" data-type="analog">
+              <div class="pin-number">A2</div>
+              <div class="pin-function">ورودی آنالوگ</div>
+              <div class="pin-type analog">Analog</div>
+            </div>
+            <div class="pin-item" data-pin="A3" data-type="analog">
+              <div class="pin-number">A3</div>
+              <div class="pin-function">ورودی آنالوگ</div>
+              <div class="pin-type analog">Analog</div>
+            </div>
+            <div class="pin-item" data-pin="A4" data-type="analog">
+              <div class="pin-number">A4 (SDA)</div>
+              <div class="pin-function">I2C Data</div>
+              <div class="pin-type analog">Analog</div>
+            </div>
+            <div class="pin-item" data-pin="A5" data-type="analog">
+              <div class="pin-number">A5 (SCL)</div>
+              <div class="pin-function">I2C Clock</div>
+              <div class="pin-type analog">Analog</div>
+            </div>
+            <div class="pin-item" data-pin="5V" data-type="power">
+              <div class="pin-number">5V</div>
+              <div class="pin-function">ولتاژ 5 ولت</div>
+              <div class="pin-type power">Power</div>
+            </div>
+            <div class="pin-item" data-pin="3.3V" data-type="power">
+              <div class="pin-number">3.3V</div>
+              <div class="pin-function">ولتاژ 3.3 ولت</div>
+              <div class="pin-type power">Power</div>
+            </div>
+            <div class="pin-item" data-pin="GND" data-type="ground">
+              <div class="pin-number">GND</div>
+              <div class="pin-function">زمین</div>
+              <div class="pin-type ground">Ground</div>
+            </div>
+            <div class="pin-item" data-pin="VIN" data-type="power">
+              <div class="pin-number">VIN</div>
+              <div class="pin-function">ورودی ولتاژ</div>
+              <div class="pin-type power">Power</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pin-details" id="pinDetails" style="display: none;">
+        <h3>جزئیات پین انتخاب شده</h3>
+        <div class="detail-grid" id="detailGrid">
+          <!-- جزئیات پین اینجا نمایش داده می‌شود -->
+        </div>
+      </div>
+
+      <div class="specifications">
+        <h2>مشخصات فنی Arduino Uno R3</h2>
+        <div class="spec-grid">
+          <div class="spec-item">
+            <div class="spec-title">میکروکنترلر</div>
+            <div class="spec-value">ATmega328P</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">فرکانس کاری</div>
+            <div class="spec-value">16 MHz</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">ولتاژ کاری</div>
+            <div class="spec-value">5V</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">پین‌های دیجیتال</div>
+            <div class="spec-value">14 عدد</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">پین‌های آنالوگ</div>
+            <div class="spec-value">6 عدد</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">پین‌های PWM</div>
+            <div class="spec-value">6 عدد</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">حافظه Flash</div>
+            <div class="spec-value">32 KB</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">حافظه SRAM</div>
+            <div class="spec-value">2 KB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>طراحی شده با ❤️ توسط دانش‌آموزان مدرسه شهید زار‌نژاد</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    let selectedPin = null;
+
+    // تنظیم رویدادها برای انتخاب پین
+    document.querySelectorAll('.pin-item').forEach(item => {
+      item.addEventListener('click', function() {
+        // حذف انتخاب قبلی
+        document.querySelectorAll('.pin-item').forEach(pin => pin.classList.remove('selected'));
+        
+        // انتخاب جدید
+        this.classList.add('selected');
+        selectedPin = this.dataset.pin;
+        
+        showPinDetails(selectedPin);
+      });
+    });
+
+    function showPinDetails(pinNumber) {
+      const details = getPinDetails(pinNumber);
+      const detailsContainer = document.getElementById('pinDetails');
+      const detailGrid = document.getElementById('detailGrid');
+      
+      detailGrid.innerHTML = '';
+      
+      Object.entries(details).forEach(([key, value]) => {
+        const detailItem = document.createElement('div');
+        detailItem.className = 'detail-item';
+        detailItem.innerHTML = `
+          <div class="detail-label">${key}</div>
+          <div class="detail-value">${value}</div>
+        `;
+        detailGrid.appendChild(detailItem);
+      });
+      
+      detailsContainer.style.display = 'block';
+    }
+
+    function getPinDetails(pinNumber) {
+      const pinDetails = {
+        '0': {
+          'نوع پین': 'دیجیتال',
+          'عملکرد': 'دریافت سریال (RX)',
+          'ولتاژ': '0-5V',
+          'جریان': '40mA',
+          'PWM': 'خیر',
+          'توضیحات': 'برای ارتباط سریال با کامپیوتر'
+        },
+        '1': {
+          'نوع پین': 'دیجیتال',
+          'عملکرد': 'ارسال سریال (TX)',
+          'ولتاژ': '0-5V',
+          'جریان': '40mA',
+          'PWM': 'خیر',
+          'توضیحات': 'برای ارتباط سریال با کامپیوتر'
+        },
+        '2': {
+          'نوع پین': 'دیجیتال',
+          'عملکرد': 'پین دیجیتال',
+          'ولتاژ': '0-5V',
+          'جریان': '40mA',
+          'PWM': 'خیر',
+          'توضیحات': 'پین دیجیتال عمومی'
+        },
+        '3': {
+          'نوع پین': 'دیجیتال',
+          'عملکرد': 'PWM - Timer 2',
+          'ولتاژ': '0-5V',
+          'جریان': '40mA',
+          'PWM': 'بله',
+          'توضیحات': 'پین PWM با فرکانس 490Hz'
+        },
+        '13': {
+          'نوع پین': 'دیجیتال',
+          'عملکرد': 'LED داخلی',
+          'ولتاژ': '0-5V',
+          'جریان': '40mA',
+          'PWM': 'خیر',
+          'توضیحات': 'متصل به LED داخلی برد'
+        },
+        'A0': {
+          'نوع پین': 'آنالوگ',
+          'عملکرد': 'ورودی آنالوگ',
+          'ولتاژ': '0-5V',
+          'رزولوشن': '10-bit (0-1023)',
+          'PWM': 'خیر',
+          'توضیحات': 'ورودی آنالوگ با رزولوشن 10 بیت'
+        },
+        'A4': {
+          'نوع پین': 'آنالوگ',
+          'عملکرد': 'I2C Data (SDA)',
+          'ولتاژ': '0-5V',
+          'رزولوشن': '10-bit (0-1023)',
+          'PWM': 'خیر',
+          'توضیحات': 'پین داده I2C برای ارتباط با سنسورها'
+        },
+        'A5': {
+          'نوع پین': 'آنالوگ',
+          'عملکرد': 'I2C Clock (SCL)',
+          'ولتاژ': '0-5V',
+          'رزولوشن': '10-bit (0-1023)',
+          'PWM': 'خیر',
+          'توضیحات': 'پین ساعت I2C برای ارتباط با سنسورها'
+        },
+        '5V': {
+          'نوع پین': 'تغذیه',
+          'عملکرد': 'ولتاژ 5 ولت',
+          'ولتاژ': '5V',
+          'جریان': 'تا 1A',
+          'PWM': 'خیر',
+          'توضیحات': 'ولتاژ تغذیه 5 ولت برای اجزای خارجی'
+        },
+        '3.3V': {
+          'نوع پین': 'تغذیه',
+          'عملکرد': 'ولتاژ 3.3 ولت',
+          'ولتاژ': '3.3V',
+          'جریان': 'تا 150mA',
+          'PWM': 'خیر',
+          'توضیحات': 'ولتاژ تغذیه 3.3 ولت برای سنسورها'
+        },
+        'GND': {
+          'نوع پین': 'زمین',
+          'عملکرد': 'زمین مدار',
+          'ولتاژ': '0V',
+          'جریان': 'نامحدود',
+          'PWM': 'خیر',
+          'توضیحات': 'پین زمین برای تکمیل مدار'
+        }
+      };
+      
+      return pinDetails[pinNumber] || {
+        'نوع پین': 'نامشخص',
+        'عملکرد': 'نامشخص',
+        'ولتاژ': 'نامشخص',
+        'توضیحات': 'اطلاعات این پین در دسترس نیست'
+      };
+    }
+  </script>
+</body>
+</html>

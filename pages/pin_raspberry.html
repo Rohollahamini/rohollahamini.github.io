@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>پین‌آوت Raspberry Pi - ابزارک شهید زار‌نژاد</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../assets/logo.png" type="image/png" />
+  <style>
+    .pinout-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .pi-board {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 8px 32px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .pi-board::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .board-visual {
+      width: 100%;
+      max-width: 600px;
+      height: 400px;
+      margin: 2rem auto;
+      background: linear-gradient(135deg, #C62828, #E53935);
+      border-radius: 20px;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    
+    .board-visual::before {
+      content: 'RASPBERRY PI 4B';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+    }
+    
+    .gpio-header {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 60px;
+      background: linear-gradient(135deg, #424242, #616161);
+      border-radius: 8px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .gpio-header::before {
+      content: 'GPIO HEADER';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .pin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .pin-section {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 6px 24px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .pin-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .pin-section h3 {
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .pin-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .pin-item {
+      background: var(--bg-hover);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 2px solid var(--border);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .pin-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: var(--primary);
+    }
+    
+    .pin-item.selected {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      box-shadow: 0 4px 16px rgba(33, 150, 243, 0.3);
+    }
+    
+    .pin-number {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .pin-function {
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .pin-type {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    
+    .pin-type.gpio {
+      background: rgba(33, 150, 243, 0.2);
+      color: var(--primary);
+    }
+    
+    .pin-type.power {
+      background: rgba(255, 152, 0, 0.2);
+      color: #FF9800;
+    }
+    
+    .pin-type.ground {
+      background: rgba(158, 158, 158, 0.2);
+      color: #9E9E9E;
+    }
+    
+    .pin-type.spi {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4CAF50;
+    }
+    
+    .pin-type.i2c {
+      background: rgba(156, 39, 176, 0.2);
+      color: #9C27B0;
+    }
+    
+    .pin-type.uart {
+      background: rgba(255, 87, 34, 0.2);
+      color: #FF5722;
+    }
+    
+    .pin-details {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    
+    .pin-details::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .pin-details h3 {
+      color: var(--primary);
+      margin-bottom: 2rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .detail-item {
+      background: var(--bg-hover);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    
+    .detail-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .detail-value {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .back-button {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 16px rgba(33, 150, 243, 0.3);
+    }
+    
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+    }
+    
+    .specifications {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-hover) 100%);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px var(--shadow);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    
+    .specifications::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .spec-item {
+      background: var(--bg-hover);
+      padding: 2rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    
+    .spec-title {
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+    
+    .spec-value {
+      color: var(--text);
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
+      .pinout-container {
+        padding: 1rem;
+      }
+      
+      .pin-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .board-visual {
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+      🌙
+    </button>
+    <img src="../assets/logo.png" alt="لوگو مدرسه" class="logo" />
+    <h1>پین‌آوت Raspberry Pi</h1>
+  </header>
+
+  <main>
+    <div class="pinout-container">
+      <button class="back-button" onclick="window.location.href='../index.html'">
+        ← بازگشت به صفحه اصلی
+      </button>
+
+      <div class="pi-board">
+        <h2>Raspberry Pi 4B</h2>
+        <div class="board-visual">
+          <div class="gpio-header"></div>
+        </div>
+        <p style="color: var(--text-secondary); text-align: center; margin-top: 1rem;">
+          میکروپردازنده ARM Cortex-A72 با 40 پین GPIO
+        </p>
+      </div>
+
+      <div class="pin-grid">
+        <div class="pin-section">
+          <h3>پین‌های GPIO</h3>
+          <div class="pin-list" id="gpioPins">
+            <div class="pin-item" data-pin="3" data-type="gpio">
+              <div class="pin-number">GPIO 2 (SDA)</div>
+              <div class="pin-function">I2C Data</div>
+              <div class="pin-type i2c">I2C</div>
+            </div>
+            <div class="pin-item" data-pin="5" data-type="gpio">
+              <div class="pin-number">GPIO 3 (SCL)</div>
+              <div class="pin-function">I2C Clock</div>
+              <div class="pin-type i2c">I2C</div>
+            </div>
+            <div class="pin-item" data-pin="7" data-type="gpio">
+              <div class="pin-number">GPIO 4</div>
+              <div class="pin-function">GPIO عمومی</div>
+              <div class="pin-type gpio">GPIO</div>
+            </div>
+            <div class="pin-item" data-pin="8" data-type="gpio">
+              <div class="pin-number">GPIO 14 (TXD)</div>
+              <div class="pin-function">UART Transmit</div>
+              <div class="pin-type uart">UART</div>
+            </div>
+            <div class="pin-item" data-pin="10" data-type="gpio">
+              <div class="pin-number">GPIO 15 (RXD)</div>
+              <div class="pin-function">UART Receive</div>
+              <div class="pin-type uart">UART</div>
+            </div>
+            <div class="pin-item" data-pin="11" data-type="gpio">
+              <div class="pin-number">GPIO 17</div>
+              <div class="pin-function">GPIO عمومی</div>
+              <div class="pin-type gpio">GPIO</div>
+            </div>
+            <div class="pin-item" data-pin="12" data-type="gpio">
+              <div class="pin-number">GPIO 18</div>
+              <div class="pin-function">GPIO عمومی</div>
+              <div class="pin-type gpio">GPIO</div>
+            </div>
+            <div class="pin-item" data-pin="13" data-type="gpio">
+              <div class="pin-number">GPIO 27</div>
+              <div class="pin-function">GPIO عمومی</div>
+              <div class="pin-type gpio">GPIO</div>
+            </div>
+            <div class="pin-item" data-pin="15" data-type="gpio">
+              <div class="pin-number">GPIO 22</div>
+              <div class="pin-function">GPIO عمومی</div>
+              <div class="pin-type gpio">GPIO</div>
+            </div>
+            <div class="pin-item" data-pin="16" data-type="gpio">
+              <div class="pin-number">GPIO 23</div>
+              <div class="pin-function">GPIO عمومی</div>
+              <div class="pin-type gpio">GPIO</div>
+            </div>
+            <div class="pin-item" data-pin="18" data-type="gpio">
+              <div class="pin-number">GPIO 24</div>
+              <div class="pin-function">GPIO عمومی</div>
+              <div class="pin-type gpio">GPIO</div>
+            </div>
+            <div class="pin-item" data-pin="19" data-type="gpio">
+              <div class="pin-number">GPIO 10 (MOSI)</div>
+              <div class="pin-function">SPI Master Out</div>
+              <div class="pin-type spi">SPI</div>
+            </div>
+            <div class="pin-item" data-pin="21" data-type="gpio">
+              <div class="pin-number">GPIO 9 (MISO)</div>
+              <div class="pin-function">SPI Master In</div>
+              <div class="pin-type spi">SPI</div>
+            </div>
+            <div class="pin-item" data-pin="22" data-type="gpio">
+              <div class="pin-number">GPIO 25</div>
+              <div class="pin-function">GPIO عمومی</div>
+              <div class="pin-type gpio">GPIO</div>
+            </div>
+            <div class="pin-item" data-pin="23" data-type="gpio">
+              <div class="pin-number">GPIO 11 (SCLK)</div>
+              <div class="pin-function">SPI Clock</div>
+              <div class="pin-type spi">SPI</div>
+            </div>
+            <div class="pin-item" data-pin="24" data-type="gpio">
+              <div class="pin-number">GPIO 8 (CE0)</div>
+              <div class="pin-function">SPI Chip Enable 0</div>
+              <div class="pin-type spi">SPI</div>
+            </div>
+            <div class="pin-item" data-pin="26" data-type="gpio">
+              <div class="pin-number">GPIO 7 (CE1)</div>
+              <div class="pin-function">SPI Chip Enable 1</div>
+              <div class="pin-type spi">SPI</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pin-section">
+          <h3>پین‌های تغذیه و زمین</h3>
+          <div class="pin-list" id="powerPins">
+            <div class="pin-item" data-pin="1" data-type="power">
+              <div class="pin-number">3.3V</div>
+              <div class="pin-function">ولتاژ 3.3 ولت</div>
+              <div class="pin-type power">Power</div>
+            </div>
+            <div class="pin-item" data-pin="2" data-type="power">
+              <div class="pin-number">5V</div>
+              <div class="pin-function">ولتاژ 5 ولت</div>
+              <div class="pin-type power">Power</div>
+            </div>
+            <div class="pin-item" data-pin="4" data-type="power">
+              <div class="pin-number">5V</div>
+              <div class="pin-function">ولتاژ 5 ولت</div>
+              <div class="pin-type power">Power</div>
+            </div>
+            <div class="pin-item" data-pin="6" data-type="ground">
+              <div class="pin-number">GND</div>
+              <div class="pin-function">زمین</div>
+              <div class="pin-type ground">Ground</div>
+            </div>
+            <div class="pin-item" data-pin="9" data-type="ground">
+              <div class="pin-number">GND</div>
+              <div class="pin-function">زمین</div>
+              <div class="pin-type ground">Ground</div>
+            </div>
+            <div class="pin-item" data-pin="14" data-type="ground">
+              <div class="pin-number">GND</div>
+              <div class="pin-function">زمین</div>
+              <div class="pin-type ground">Ground</div>
+            </div>
+            <div class="pin-item" data-pin="17" data-type="power">
+              <div class="pin-number">3.3V</div>
+              <div class="pin-function">ولتاژ 3.3 ولت</div>
+              <div class="pin-type power">Power</div>
+            </div>
+            <div class="pin-item" data-pin="20" data-type="ground">
+              <div class="pin-number">GND</div>
+              <div class="pin-function">زمین</div>
+              <div class="pin-type ground">Ground</div>
+            </div>
+            <div class="pin-item" data-pin="25" data-type="ground">
+              <div class="pin-number">GND</div>
+              <div class="pin-function">زمین</div>
+              <div class="pin-type ground">Ground</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pin-details" id="pinDetails" style="display: none;">
+        <h3>جزئیات پین انتخاب شده</h3>
+        <div class="detail-grid" id="detailGrid">
+          <!-- جزئیات پین اینجا نمایش داده می‌شود -->
+        </div>
+      </div>
+
+      <div class="specifications">
+        <h2>مشخصات فنی Raspberry Pi 4B</h2>
+        <div class="spec-grid">
+          <div class="spec-item">
+            <div class="spec-title">پردازنده</div>
+            <div class="spec-value">ARM Cortex-A72</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">فرکانس کاری</div>
+            <div class="spec-value">1.5 GHz</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">حافظه RAM</div>
+            <div class="spec-value">2/4/8 GB</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">پین‌های GPIO</div>
+            <div class="spec-value">40 عدد</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">ولتاژ کاری</div>
+            <div class="spec-value">5V</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">پورت USB</div>
+            <div class="spec-value">4 عدد USB 3.0</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">پورت Ethernet</div>
+            <div class="spec-value">Gigabit</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-title">پورت HDMI</div>
+            <div class="spec-value">2 عدد 4K</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>طراحی شده با ❤️ توسط دانش‌آموزان مدرسه شهید زار‌نژاد</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    let selectedPin = null;
+
+    // تنظیم رویدادها برای انتخاب پین
+    document.querySelectorAll('.pin-item').forEach(item => {
+      item.addEventListener('click', function() {
+        // حذف انتخاب قبلی
+        document.querySelectorAll('.pin-item').forEach(pin => pin.classList.remove('selected'));
+        
+        // انتخاب جدید
+        this.classList.add('selected');
+        selectedPin = this.dataset.pin;
+        
+        showPinDetails(selectedPin);
+      });
+    });
+
+    function showPinDetails(pinNumber) {
+      const details = getPinDetails(pinNumber);
+      const detailsContainer = document.getElementById('pinDetails');
+      const detailGrid = document.getElementById('detailGrid');
+      
+      detailGrid.innerHTML = '';
+      
+      Object.entries(details).forEach(([key, value]) => {
+        const detailItem = document.createElement('div');
+        detailItem.className = 'detail-item';
+        detailItem.innerHTML = `
+          <div class="detail-label">${key}</div>
+          <div class="detail-value">${value}</div>
+        `;
+        detailGrid.appendChild(detailItem);
+      });
+      
+      detailsContainer.style.display = 'block';
+    }
+
+    function getPinDetails(pinNumber) {
+      const pinDetails = {
+        '1': {
+          'نوع پین': 'تغذیه',
+          'ولتاژ': '3.3V',
+          'جریان': 'تا 50mA',
+          'توضیحات': 'ولتاژ تغذیه 3.3 ولت برای اجزای کم مصرف'
+        },
+        '2': {
+          'نوع پین': 'تغذیه',
+          'ولتاژ': '5V',
+          'جریان': 'تا 1A',
+          'توضیحات': 'ولتاژ تغذیه 5 ولت برای اجزای خارجی'
+        },
+        '3': {
+          'نوع پین': 'GPIO',
+          'عملکرد': 'I2C Data (SDA)',
+          'ولتاژ': '3.3V',
+          'جریان': '16mA',
+          'توضیحات': 'پین داده I2C برای ارتباط با سنسورها'
+        },
+        '5': {
+          'نوع پین': 'GPIO',
+          'عملکرد': 'I2C Clock (SCL)',
+          'ولتاژ': '3.3V',
+          'جریان': '16mA',
+          'توضیحات': 'پین ساعت I2C برای ارتباط با سنسورها'
+        },
+        '6': {
+          'نوع پین': 'زمین',
+          'ولتاژ': '0V',
+          'جریان': 'نامحدود',
+          'توضیحات': 'پین زمین برای تکمیل مدار'
+        },
+        '8': {
+          'نوع پین': 'GPIO',
+          'عملکرد': 'UART Transmit (TXD)',
+          'ولتاژ': '3.3V',
+          'جریان': '16mA',
+          'توضیحات': 'پین ارسال داده سریال'
+        },
+        '10': {
+          'نوع پین': 'GPIO',
+          'عملکرد': 'UART Receive (RXD)',
+          'ولتاژ': '3.3V',
+          'جریان': '16mA',
+          'توضیحات': 'پین دریافت داده سریال'
+        },
+        '19': {
+          'نوع پین': 'GPIO',
+          'عملکرد': 'SPI Master Out (MOSI)',
+          'ولتاژ': '3.3V',
+          'جریان': '16mA',
+          'توضیحات': 'پین ارسال داده SPI'
+        },
+        '21': {
+          'نوع پین': 'GPIO',
+          'عملکرد': 'SPI Master In (MISO)',
+          'ولتاژ': '3.3V',
+          'جریان': '16mA',
+          'توضیحات': 'پین دریافت داده SPI'
+        },
+        '23': {
+          'نوع پین': 'GPIO',
+          'عملکرد': 'SPI Clock (SCLK)',
+          'ولتاژ': '3.3V',
+          'جریان': '16mA',
+          'توضیحات': 'پین ساعت SPI'
+        }
+      };
+      
+      return pinDetails[pinNumber] || {
+        'نوع پین': 'نامشخص',
+        'عملکرد': 'نامشخص',
+        'ولتاژ': 'نامشخص',
+        'توضیحات': 'اطلاعات این پین در دسترس نیست'
+      };
+    }
+  </script>
+</body>
+</html>
