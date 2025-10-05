@@ -1,6 +1,0 @@
-   <div class="menu">
-      <button class="menu-btn" onclick="window.location.href='equivalent-resistance.html'">مقاومت معادل 🔗</button>
-      <button class="menu-btn" onclick="window.location.href='capacitor-calc.html'">محاسبات خازن ⚙️</button>
-      <button class="menu-btn" onclick="window.location.href='voltage-divider.html'">تقسیم ولتاژ 🔌</button>
-      <button class="menu-btn" onclick="window.location.href='unit-converter.html'">تبدیل واحدها 📏</button>
-    </div>
