@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>محاسبه مدارهای سری و موازی - ابزارک شهید زال‌نژاد</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../assets/logo.png" type="image/png" />
+  <style>
+    .calculator-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .calc-section {
+      background: var(--bg-dark);
+      border-radius: var(--radius-large);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px var(--shadow);
+      border: 1px solid var(--border);
+    }
+    
+    .calc-title {
+      color: var(--primary);
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 0.5rem;
+    }
+    
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    .input-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      background: var(--bg);
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+    
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+    
+    .resistor-inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .add-resistor-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+    }
+    
+    .add-resistor-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    
+    .calculate-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    
+    .calculate-btn:hover {
+      background: #E91E63;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 64, 129, 0.3);
+    }
+    
+    .result-box {
+      background: var(--primary-light);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    
+    .result-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 0.5rem;
+    }
+    
+    .result-unit {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+    
+    .circuit-diagram {
+      text-align: center;
+      margin: 2rem 0;
+      font-size: 2rem;
+      color: var(--primary);
+    }
+    
+    .remove-resistor {
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-right: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .remove-resistor:hover {
+      background: #d32f2f;
+      transform: scale(1.1);
+    }
+    
+    .resistor-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .back-btn {
+      background: var(--text-secondary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .back-btn:hover {
+      background: var(--text);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator-container">
+    <a href="../index.html" class="back-btn">← بازگشت به صفحه اصلی</a>
+    
+    <h1 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">
+      محاسبه مدارهای سری و موازی
+    </h1>
+    
+    <!-- Series Circuit Calculator -->
+    <div class="calc-section">
+      <h2 class="calc-title">مدار سری</h2>
+      <div class="circuit-diagram">
+        R₁ — R₂ — R₃ — ...
+      </div>
+      <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem;">
+        در مدار سری: R<sub>total</sub> = R₁ + R₂ + R₃ + ...
+      </p>
+      
+      <div id="seriesInputs">
+        <div class="resistor-item">
+          <button class="remove-resistor" onclick="removeResistor(this, 'series')" style="display: none;">×</button>
+          <div class="input-group">
+            <label>مقاومت ۱ (Ω):</label>
+            <input type="number" step="0.01" placeholder="مقدار مقاومت" class="resistor-input">
+          </div>
+        </div>
+      </div>
+      
+      <button class="add-resistor-btn" onclick="addResistor('series')">
+        + اضافه کردن مقاومت
+      </button>
+      
+      <button class="calculate-btn" onclick="calculateSeries()">
+        محاسبه مقاومت کل سری
+      </button>
+      
+      <div id="seriesResult" class="result-box" style="display: none;">
+        <div class="result-value" id="seriesValue">0</div>
+        <div class="result-unit">اهم (Ω)</div>
+      </div>
+    </div>
+    
+    <!-- Parallel Circuit Calculator -->
+    <div class="calc-section">
+      <h2 class="calc-title">مدار موازی</h2>
+      <div class="circuit-diagram">
+        ┌─ R₁ ─┐<br>
+        ┌─ R₂ ─┐<br>
+        ┌─ R₃ ─┐<br>
+        └───────┘
+      </div>
+      <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem;">
+        در مدار موازی: 1/R<sub>total</sub> = 1/R₁ + 1/R₂ + 1/R₃ + ...
+      </p>
+      
+      <div id="parallelInputs">
+        <div class="resistor-item">
+          <button class="remove-resistor" onclick="removeResistor(this, 'parallel')" style="display: none;">×</button>
+          <div class="input-group">
+            <label>مقاومت ۱ (Ω):</label>
+            <input type="number" step="0.01" placeholder="مقدار مقاومت" class="resistor-input">
+          </div>
+        </div>
+      </div>
+      
+      <button class="add-resistor-btn" onclick="addResistor('parallel')">
+        + اضافه کردن مقاومت
+      </button>
+      
+      <button class="calculate-btn" onclick="calculateParallel()">
+        محاسبه مقاومت کل موازی
+      </button>
+      
+      <div id="parallelResult" class="result-box" style="display: none;">
+        <div class="result-value" id="parallelValue">0</div>
+        <div class="result-unit">اهم (Ω)</div>
+      </div>
+    </div>
+    
+    <!-- Mixed Circuit Calculator -->
+    <div class="calc-section">
+      <h2 class="calc-title">مدار ترکیبی</h2>
+      <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem;">
+        محاسبه مقاومت کل در مدارهای ترکیبی (سری و موازی)
+      </p>
+      
+      <div class="input-group">
+        <label>مقاومت‌های سری (جدا شده با کاما):</label>
+        <input type="text" id="seriesResistors" placeholder="مثال: 100, 200, 300" />
+      </div>
+      
+      <div class="input-group">
+        <label>مقاومت‌های موازی (جدا شده با کاما):</label>
+        <input type="text" id="parallelResistors" placeholder="مثال: 100, 200, 300" />
+      </div>
+      
+      <button class="calculate-btn" onclick="calculateMixed()">
+        محاسبه مقاومت کل ترکیبی
+      </button>
+      
+      <div id="mixedResult" class="result-box" style="display: none;">
+        <div class="result-value" id="mixedValue">0</div>
+        <div class="result-unit">اهم (Ω)</div>
+        <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+          <div>مقاومت سری: <span id="seriesPart">0</span> Ω</div>
+          <div>مقاومت موازی: <span id="parallelPart">0</span> Ω</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let seriesCount = 1;
+    let parallelCount = 1;
+    
+    function addResistor(type) {
+      const container = document.getElementById(type + 'Inputs');
+      const count = type === 'series' ? ++seriesCount : ++parallelCount;
+      
+      const resistorDiv = document.createElement('div');
+      resistorDiv.className = 'resistor-item';
+      resistorDiv.innerHTML = `
+        <button class="remove-resistor" onclick="removeResistor(this, '${type}')">×</button>
+        <div class="input-group">
+          <label>مقاومت ${count} (Ω):</label>
+          <input type="number" step="0.01" placeholder="مقدار مقاومت" class="resistor-input">
+        </div>
+      `;
+      
+      container.appendChild(resistorDiv);
+      
+      // Show remove buttons for all resistors if more than one
+      const removeButtons = container.querySelectorAll('.remove-resistor');
+      removeButtons.forEach(btn => btn.style.display = removeButtons.length > 1 ? 'block' : 'none');
+    }
+    
+    function removeResistor(button, type) {
+      const container = document.getElementById(type + 'Inputs');
+      const resistorDiv = button.parentElement;
+      container.removeChild(resistorDiv);
+      
+      // Update remove button visibility
+      const remainingButtons = container.querySelectorAll('.remove-resistor');
+      remainingButtons.forEach(btn => btn.style.display = remainingButtons.length > 1 ? 'block' : 'none');
+      
+      // Recalculate if there are results
+      if (type === 'series' && document.getElementById('seriesResult').style.display !== 'none') {
+        calculateSeries();
+      } else if (type === 'parallel' && document.getElementById('parallelResult').style.display !== 'none') {
+        calculateParallel();
+      }
+    }
+    
+    function calculateSeries() {
+      const inputs = document.querySelectorAll('#seriesInputs .resistor-input');
+      let total = 0;
+      let validInputs = 0;
+      
+      inputs.forEach(input => {
+        const value = parseFloat(input.value);
+        if (!isNaN(value) && value > 0) {
+          total += value;
+          validInputs++;
+        }
+      });
+      
+      if (validInputs === 0) {
+        alert('لطفاً حداقل یک مقاومت معتبر وارد کنید');
+        return;
+      }
+      
+      document.getElementById('seriesValue').textContent = total.toFixed(2);
+      document.getElementById('seriesResult').style.display = 'block';
+    }
+    
+    function calculateParallel() {
+      const inputs = document.querySelectorAll('#parallelInputs .resistor-input');
+      let reciprocalSum = 0;
+      let validInputs = 0;
+      
+      inputs.forEach(input => {
+        const value = parseFloat(input.value);
+        if (!isNaN(value) && value > 0) {
+          reciprocalSum += 1 / value;
+          validInputs++;
+        }
+      });
+      
+      if (validInputs === 0) {
+        alert('لطفاً حداقل یک مقاومت معتبر وارد کنید');
+        return;
+      }
+      
+      const total = 1 / reciprocalSum;
+      document.getElementById('parallelValue').textContent = total.toFixed(2);
+      document.getElementById('parallelResult').style.display = 'block';
+    }
+    
+    function calculateMixed() {
+      const seriesText = document.getElementById('seriesResistors').value;
+      const parallelText = document.getElementById('parallelResistors').value;
+      
+      let seriesTotal = 0;
+      let parallelTotal = 0;
+      
+      // Calculate series resistance
+      if (seriesText.trim()) {
+        const seriesValues = seriesText.split(',').map(v => parseFloat(v.trim())).filter(v => !isNaN(v) && v > 0);
+        seriesTotal = seriesValues.reduce((sum, val) => sum + val, 0);
+      }
+      
+      // Calculate parallel resistance
+      if (parallelText.trim()) {
+        const parallelValues = parallelText.split(',').map(v => parseFloat(v.trim())).filter(v => !isNaN(v) && v > 0);
+        if (parallelValues.length > 0) {
+          const reciprocalSum = parallelValues.reduce((sum, val) => sum + 1/val, 0);
+          parallelTotal = 1 / reciprocalSum;
+        }
+      }
+      
+      const total = seriesTotal + parallelTotal;
+      
+      if (total === 0) {
+        alert('لطفاً حداقل یک مقاومت در یکی از فیلدها وارد کنید');
+        return;
+      }
+      
+      document.getElementById('seriesPart').textContent = seriesTotal.toFixed(2);
+      document.getElementById('parallelPart').textContent = parallelTotal.toFixed(2);
+      document.getElementById('mixedValue').textContent = total.toFixed(2);
+      document.getElementById('mixedResult').style.display = 'block';
+    }
+    
+    // Load theme
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.body.setAttribute('data-theme', savedTheme);
+      }
+    });
+  </script>
+</body>
+</html>

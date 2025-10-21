@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>محاسبه خازن - ابزارک شهید زال‌نژاد</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="icon" href="../assets/logo.png" type="image/png" />
+  <style>
+    .calculator-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .calc-section {
+      background: var(--bg-dark);
+      border-radius: var(--radius-large);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px var(--shadow);
+      border: 1px solid var(--border);
+    }
+    
+    .calc-title {
+      color: var(--primary);
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 0.5rem;
+    }
+    
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    .input-group input, .input-group select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      background: var(--bg);
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+    
+    .input-group input:focus, .input-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+    
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    .calculate-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    
+    .calculate-btn:hover {
+      background: #E91E63;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 64, 129, 0.3);
+    }
+    
+    .result-box {
+      background: var(--primary-light);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    
+    .result-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 0.5rem;
+    }
+    
+    .result-unit {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+    
+    .formula-box {
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin: 1rem 0;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .back-btn {
+      background: var(--text-secondary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .back-btn:hover {
+      background: var(--text);
+      transform: translateY(-1px);
+    }
+    
+    .chart-container {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    
+    .chart {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator-container">
+    <a href="../index.html" class="back-btn">← بازگشت به صفحه اصلی</a>
+    
+    <h1 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">
+      محاسبات خازن
+    </h1>
+    
+    <!-- Capacitor Charging -->
+    <div class="calc-section">
+      <h2 class="calc-title">شارژ خازن</h2>
+      <div class="formula-box">
+        V(t) = V₀(1 - e^(-t/RC))<br>
+        I(t) = (V₀/R)e^(-t/RC)
+      </div>
+      
+      <div class="input-row">
+        <div class="input-group">
+          <label>ولتاژ منبع (V):</label>
+          <input type="number" step="0.01" id="chargingVoltage" placeholder="12">
+        </div>
+        <div class="input-group">
+          <label>مقاومت (Ω):</label>
+          <input type="number" step="0.01" id="chargingResistance" placeholder="1000">
+        </div>
+      </div>
+      
+      <div class="input-row">
+        <div class="input-group">
+          <label>ظرفیت خازن (μF):</label>
+          <input type="number" step="0.01" id="chargingCapacitance" placeholder="100">
+        </div>
+        <div class="input-group">
+          <label>زمان (ms):</label>
+          <input type="number" step="0.01" id="chargingTime" placeholder="50">
+        </div>
+      </div>
+      
+      <button class="calculate-btn" onclick="calculateCharging()">
+        محاسبه شارژ خازن
+      </button>
+      
+      <div id="chargingResult" class="result-box" style="display: none;">
+        <div class="result-value" id="chargingVoltageResult">0</div>
+        <div class="result-unit">ولت</div>
+        <div style="margin-top: 1rem;">
+          <div>جریان: <span id="chargingCurrent">0</span> A</div>
+          <div>ثابت زمانی: <span id="chargingTimeConstant">0</span> ms</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Capacitor Discharging -->
+    <div class="calc-section">
+      <h2 class="calc-title">تخلیه خازن</h2>
+      <div class="formula-box">
+        V(t) = V₀e^(-t/RC)<br>
+        I(t) = -(V₀/R)e^(-t/RC)
+      </div>
+      
+      <div class="input-row">
+        <div class="input-group">
+          <label>ولتاژ اولیه (V):</label>
+          <input type="number" step="0.01" id="dischargingVoltage" placeholder="12">
+        </div>
+        <div class="input-group">
+          <label>مقاومت (Ω):</label>
+          <input type="number" step="0.01" id="dischargingResistance" placeholder="1000">
+        </div>
+      </div>
+      
+      <div class="input-row">
+        <div class="input-group">
+          <label>ظرفیت خازن (μF):</label>
+          <input type="number" step="0.01" id="dischargingCapacitance" placeholder="100">
+        </div>
+        <div class="input-group">
+          <label>زمان (ms):</label>
+          <input type="number" step="0.01" id="dischargingTime" placeholder="50">
+        </div>
+      </div>
+      
+      <button class="calculate-btn" onclick="calculateDischarging()">
+        محاسبه تخلیه خازن
+      </button>
+      
+      <div id="dischargingResult" class="result-box" style="display: none;">
+        <div class="result-value" id="dischargingVoltageResult">0</div>
+        <div class="result-unit">ولت</div>
+        <div style="margin-top: 1rem;">
+          <div>جریان: <span id="dischargingCurrent">0</span> A</div>
+          <div>ثابت زمانی: <span id="dischargingTimeConstant">0</span> ms</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Time Constant Calculator -->
+    <div class="calc-section">
+      <h2 class="calc-title">ثابت زمانی</h2>
+      <div class="formula-box">
+        τ = R × C
+      </div>
+      
+      <div class="input-row">
+        <div class="input-group">
+          <label>مقاومت (Ω):</label>
+          <input type="number" step="0.01" id="tauResistance" placeholder="1000">
+        </div>
+        <div class="input-group">
+          <label>ظرفیت خازن (μF):</label>
+          <input type="number" step="0.01" id="tauCapacitance" placeholder="100">
+        </div>
+      </div>
+      
+      <button class="calculate-btn" onclick="calculateTimeConstant()">
+        محاسبه ثابت زمانی
+      </button>
+      
+      <div id="tauResult" class="result-box" style="display: none;">
+        <div class="result-value" id="tauValue">0</div>
+        <div class="result-unit">ثانیه</div>
+        <div style="margin-top: 1rem;">
+          <div>ثابت زمانی: <span id="tauMs">0</span> ms</div>
+          <div>زمان 63% شارژ: <span id="tau63">0</span> ms</div>
+          <div>زمان 95% شارژ: <span id="tau95">0</span> ms</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Capacitor Energy -->
+    <div class="calc-section">
+      <h2 class="calc-title">انرژی ذخیره شده در خازن</h2>
+      <div class="formula-box">
+        E = ½ × C × V²
+      </div>
+      
+      <div class="input-row">
+        <div class="input-group">
+          <label>ظرفیت خازن (μF):</label>
+          <input type="number" step="0.01" id="energyCapacitance" placeholder="100">
+        </div>
+        <div class="input-group">
+          <label>ولتاژ (V):</label>
+          <input type="number" step="0.01" id="energyVoltage" placeholder="12">
+        </div>
+      </div>
+      
+      <button class="calculate-btn" onclick="calculateEnergy()">
+        محاسبه انرژی
+      </button>
+      
+      <div id="energyResult" class="result-box" style="display: none;">
+        <div class="result-value" id="energyValue">0</div>
+        <div class="result-unit">ژول</div>
+        <div style="margin-top: 1rem;">
+          <div>انرژی: <span id="energyJ">0</span> J</div>
+          <div>انرژی: <span id="energyWh">0</span> Wh</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Charging Chart -->
+    <div class="calc-section">
+      <h2 class="calc-title">نمودار شارژ خازن</h2>
+      <div class="chart-container">
+        <div class="chart" id="chargingChart">
+          <div>نمودار شارژ خازن</div>
+          <div>زمان →</div>
+          <div>ولتاژ ↑</div>
+          <div style="margin-top: 1rem; font-size: 0.8rem;">
+            <div>V₀ ┌─────────────────</div>
+            <div>    │     ╱</div>
+            <div>    │    ╱</div>
+            <div>    │   ╱</div>
+            <div>    │  ╱</div>
+            <div>    │ ╱</div>
+            <div>    │╱</div>
+            <div>    └─────────────────</div>
+            <div>    0    τ    2τ    3τ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function calculateCharging() {
+      const V0 = parseFloat(document.getElementById('chargingVoltage').value);
+      const R = parseFloat(document.getElementById('chargingResistance').value);
+      const C = parseFloat(document.getElementById('chargingCapacitance').value) * 1e-6; // Convert μF to F
+      const t = parseFloat(document.getElementById('chargingTime').value) * 1e-3; // Convert ms to s
+      
+      if (isNaN(V0) || isNaN(R) || isNaN(C) || isNaN(t)) {
+        alert('لطفاً تمام مقادیر را وارد کنید');
+        return;
+      }
+      
+      const tau = R * C;
+      const Vt = V0 * (1 - Math.exp(-t / tau));
+      const It = (V0 / R) * Math.exp(-t / tau);
+      
+      document.getElementById('chargingVoltageResult').textContent = Vt.toFixed(3);
+      document.getElementById('chargingCurrent').textContent = (It * 1000).toFixed(3) + ' mA';
+      document.getElementById('chargingTimeConstant').textContent = (tau * 1000).toFixed(2);
+      document.getElementById('chargingResult').style.display = 'block';
+    }
+    
+    function calculateDischarging() {
+      const V0 = parseFloat(document.getElementById('dischargingVoltage').value);
+      const R = parseFloat(document.getElementById('dischargingResistance').value);
+      const C = parseFloat(document.getElementById('dischargingCapacitance').value) * 1e-6;
+      const t = parseFloat(document.getElementById('dischargingTime').value) * 1e-3;
+      
+      if (isNaN(V0) || isNaN(R) || isNaN(C) || isNaN(t)) {
+        alert('لطفاً تمام مقادیر را وارد کنید');
+        return;
+      }
+      
+      const tau = R * C;
+      const Vt = V0 * Math.exp(-t / tau);
+      const It = -(V0 / R) * Math.exp(-t / tau);
+      
+      document.getElementById('dischargingVoltageResult').textContent = Vt.toFixed(3);
+      document.getElementById('dischargingCurrent').textContent = (It * 1000).toFixed(3) + ' mA';
+      document.getElementById('dischargingTimeConstant').textContent = (tau * 1000).toFixed(2);
+      document.getElementById('dischargingResult').style.display = 'block';
+    }
+    
+    function calculateTimeConstant() {
+      const R = parseFloat(document.getElementById('tauResistance').value);
+      const C = parseFloat(document.getElementById('tauCapacitance').value) * 1e-6;
+      
+      if (isNaN(R) || isNaN(C)) {
+        alert('لطفاً مقاومت و ظرفیت خازن را وارد کنید');
+        return;
+      }
+      
+      const tau = R * C;
+      
+      document.getElementById('tauValue').textContent = tau.toFixed(6);
+      document.getElementById('tauMs').textContent = (tau * 1000).toFixed(2);
+      document.getElementById('tau63').textContent = (tau * 1000).toFixed(2);
+      document.getElementById('tau95').textContent = (3 * tau * 1000).toFixed(2);
+      document.getElementById('tauResult').style.display = 'block';
+    }
+    
+    function calculateEnergy() {
+      const C = parseFloat(document.getElementById('energyCapacitance').value) * 1e-6;
+      const V = parseFloat(document.getElementById('energyVoltage').value);
+      
+      if (isNaN(C) || isNaN(V)) {
+        alert('لطفاً ظرفیت خازن و ولتاژ را وارد کنید');
+        return;
+      }
+      
+      const E = 0.5 * C * V * V;
+      
+      document.getElementById('energyValue').textContent = E.toFixed(6);
+      document.getElementById('energyJ').textContent = E.toFixed(6);
+      document.getElementById('energyWh').textContent = (E / 3600).toFixed(6);
+      document.getElementById('energyResult').style.display = 'block';
+    }
+    
+    // Load theme
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.body.setAttribute('data-theme', savedTheme);
+      }
+    });
+  </script>
+</body>
+</html>
